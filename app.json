@@ -1,28 +1,78 @@
 {
   "expo": {
-    "name": "anotherFinal",
-    "slug": "anotherFinal",
+    "name": "EyeScanMyCat",
+    "slug": "EyeScanMyCat",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/eyeScanIcon2.png",
+    "scheme": "eyescanmycat",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "assetBundlePatterns": [
+      "assets/**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.eyescanmycat",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app requires access to your camera to scan your cat's eyes.",
+        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library to save or access scanned images."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.eyescanmycat",
+      "versionCode": 2,
+      "permissions": [
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE",
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/eyeScanMyCatFullLogo.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+        
+      ],
+      "expo-asset",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8f16efd8-f3b4-4456-b422-f4dfa57038af"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8f16efd8-f3b4-4456-b422-f4dfa57038af"
     }
   }
 }
