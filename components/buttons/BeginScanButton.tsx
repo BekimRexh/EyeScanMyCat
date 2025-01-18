@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textContainer: {
-    // Original "Start" / "Scan" icons layout
+    // Original "Start" / "Scan" icons 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
