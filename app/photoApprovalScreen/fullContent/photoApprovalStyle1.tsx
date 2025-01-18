@@ -11,6 +11,8 @@ import Header from '../header/header';
 import Footer from '../footer/Footer';
 import { useRouter } from 'expo-router';
 import { GestureDetector } from 'react-native-gesture-handler';
+import { useReducedMotion } from 'react-native-reanimated';
+
 import { Svg, Path } from 'react-native-svg';
 import {
   HEADER_HEIGHT,
@@ -619,6 +621,8 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
   // }
   
   case 'showImage': {
+    const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
+  
     const adjustedHeight = CONTENT_HEIGHT / 1.15; // Calculate new percentage
   
     const cameraContainerStyle = props.cameraContainer
@@ -679,6 +683,12 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
     }, [props.imageUrl]);
   
     useEffect(() => {
+      if (shouldReduceMotion) {
+        horizontalScanPosition.value = 0;
+        verticalScanPosition.value = 0;
+        return;
+      }
+  
       if (props.showHorizontalAnimation) {
         horizontalScanPosition.value = withRepeat(
           withTiming(cameraContainerDimensions.width - 15, { duration: 4000 }),
@@ -702,6 +712,9 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
       props.showHorizontalAnimation,
       props.showVerticalAnimation,
       cameraContainerDimensions,
+      shouldReduceMotion,
+      horizontalScanPosition,
+      verticalScanPosition,
     ]);
   
     return (
@@ -726,15 +739,11 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
         ) : props.imageUrl ? (
           <>
             <Image source={{ uri: props.imageUrl }} style={styles.camera} />
-            {props.showHorizontalAnimation && (
-              <Animated.View
-                style={[styles.horizontalScanBar, horizontalAnimatedStyle]}
-              />
+            {!shouldReduceMotion && props.showHorizontalAnimation && (
+              <Animated.View style={[styles.horizontalScanBar, horizontalAnimatedStyle]} />
             )}
-            {props.showVerticalAnimation && (
-              <Animated.View
-                style={[styles.verticalScanBar, verticalAnimatedStyle]}
-              />
+            {!shouldReduceMotion && props.showVerticalAnimation && (
+              <Animated.View style={[styles.verticalScanBar, verticalAnimatedStyle]} />
             )}
           </>
         ) : (

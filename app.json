@@ -1,9 +1,10 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "EyeScanMyCat",
     "slug": "EyeScanMyCat",
-    "version": "1.0.0",
-    "runtimeVersion": "1.0.1",
+    "version": "1.2.0",
+    "runtimeVersion": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/eyeScanIcon2.png",
     "scheme": "eyescanmycat",
@@ -15,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.eyescanmycat",
-      "buildNumber": "1.0.0",
+      "buildNumber": "3.0.0",
       "infoPlist": {
         "NSCameraUsageDescription": "This app requires access to your camera to scan your cat's eyes.",
         "NSPhotoLibraryUsageDescription": "This app requires access to your photo library to save or access scanned images."
@@ -52,6 +53,12 @@
           "backgroundColor": "#ffffff"
         }
         
+      ],
+      [
+        "react-native-fast-tflite",
+        {
+          "enableCoreMLDelegate": true
+        }
       ],
       "expo-asset",
       [

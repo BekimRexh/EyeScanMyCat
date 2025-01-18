@@ -1,13 +1,16 @@
+// Index.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, Easing, Image } from 'react-native';
 import VerticalStack from './indexScreen/fullContent/indexStyle1';
+import { useReducedMotion } from 'react-native-reanimated';
 
 const FADE_DURATION = 1500; // ms for fade in/out
-const IMAGE_DURATION = 10000; // Display each image for 6 seconds
+const IMAGE_DURATION = 10000; // Display each image for 10 seconds
 
 export default function Index() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
 
   // All your image sources
   const imageSources = [
@@ -24,6 +27,10 @@ export default function Index() {
   ];
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      return;
+    }
+
     const interval = setInterval(() => {
       // Fade out
       Animated.timing(fadeAnim, {
@@ -46,7 +53,7 @@ export default function Index() {
     }, IMAGE_DURATION);
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [fadeAnim]);
+  }, [fadeAnim, shouldReduceMotion]);
 
   return (
     <View style={styles.container}>
@@ -59,7 +66,13 @@ export default function Index() {
               {
                 type: 'view',
                 props: {
-                  children: (
+                  children: shouldReduceMotion ? (
+                    <Image
+                      source={imageSources[currentImageIndex]}
+                      style={styles.imageStyle}
+                      resizeMode="cover"
+                    />
+                  ) : (
                     <Animated.View style={{ opacity: fadeAnim }}>
                       <Image
                         source={imageSources[currentImageIndex]}

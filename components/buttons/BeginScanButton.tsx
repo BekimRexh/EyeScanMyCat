@@ -1,15 +1,23 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
-  Animated,
   StyleSheet,
   TouchableOpacity,
   Text,
-  Easing,
 } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { AntDesign } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withRepeat,
+  Easing,
+  cancelAnimation,
+  runOnJS,
+} from 'react-native-reanimated';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import { HEADER_HEIGHT, CONTENT_WIDTH, CONTENT_HEIGHT } from '../../assets/utils/dimensions';
 
@@ -40,164 +48,185 @@ export default function BeginScanButton({
    * --------------------------------------------------------
    */
   const buttonHeight = HEADER_HEIGHT * heightMultiplier;
-  const buttonWidth  = CONTENT_WIDTH * widthMultiplier;
-  const halfWidth    = buttonWidth / 2.5;
+  const buttonWidth = CONTENT_WIDTH * widthMultiplier;
+  const halfWidth = buttonWidth / 2.5;
 
   /**
    * --------------------------------------------------------
-   * 2) Animation values
+   * 2) Shared Values
    * --------------------------------------------------------
    */
-  const widthAnim = useRef(new Animated.Value(buttonWidth)).current;
-  const fadeIdleIcons = useRef(new Animated.Value(1)).current;
-  const fadeExpandedText = useRef(new Animated.Value(0)).current;
+  const widthAnim = useSharedValue(buttonWidth);
+  const fadeIdleIcons = useSharedValue(1);
+  const fadeExpandedText = useSharedValue(0);
+  const spinAnim = useSharedValue(0);
 
   const isDisabled = scanStatus !== 'idle'; // Disable if not in idle state
 
+  const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
 
   /**
    * --------------------------------------------------------
-   * 3) Orchestrate width + fade transitions
+   * 3) Animated Styles
    * --------------------------------------------------------
    */
-  useEffect(() => {
-    if (scanStatus === 'idle') {
-      Animated.timing(widthAnim, {
-        toValue: buttonWidth,
-        duration: 400,
-        easing: Easing.inOut(Easing.quad),
-        useNativeDriver: false,
-      }).start(() => {
-        fadeIdleIcons.setValue(1);
-      });
-      fadeExpandedText.setValue(0);
+  const animatedButtonStyle = useAnimatedStyle(() => ({
+    width: widthAnim.value,
+    height: buttonHeight,
+    borderRadius: buttonHeight / 2,
+    opacity: isDisabled ? 0.85 : 1,
+  }));
 
-    } else if (scanStatus === 'loadingCircle') {
-      // Hide idle icons
-      fadeIdleIcons.setValue(0);
-      // Circle
-      Animated.timing(widthAnim, {
-        toValue: halfWidth,
-        duration: 400,
-        easing: Easing.inOut(Easing.quad),
-        useNativeDriver: false,
-      }).start(() => {
-        fadeExpandedText.setValue(0);
-      });
+  const idleIconsStyle = useAnimatedStyle(() => ({
+    opacity: fadeIdleIcons.value,
+  }));
 
-    } else if (scanStatus === 'loadingExpanded' || scanStatus === 'error' ) {
-      // Expand => fade in text
-      fadeExpandedText.setValue(0);
-      Animated.timing(widthAnim, {
-        toValue: buttonWidth*1.1,
-        duration: 400,
-        easing: Easing.inOut(Easing.quad),
-        useNativeDriver: false,
-      }).start(() => {
-        Animated.timing(fadeExpandedText, {
-          toValue: 1,
-          duration: 300,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }).start();
-      });
-    }
-  }, [scanStatus, buttonWidth, halfWidth, widthAnim, fadeIdleIcons, fadeExpandedText]);
+  const expandedTextStyle = useAnimatedStyle(() => ({
+    opacity: fadeExpandedText.value,
+  }));
 
-  /**
-   * --------------------------------------------------------
-   * 4) Spinner animation => never unmount => never resets
-   * --------------------------------------------------------
-   */
-  const spinAnim = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    if (loading) {
-      Animated.loop(
-        Animated.timing(spinAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-          easing: Easing.linear,
-        })
-      ).start();
-    } else {
-      spinAnim.stopAnimation(() => spinAnim.setValue(0));
-    }
-  }, [loading, spinAnim]);
-
-  // Reusable spin style
-  const spinStyle = {
+  const spinnerStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        rotate: spinAnim.interpolate({
-          inputRange: [0, 1],
-          outputRange: ['0deg', '360deg'],
-        }),
+        rotate: `${spinAnim.value * 360}deg`,
       },
     ],
-  };
+  }));
+
+  const expandedRowStyle = useAnimatedStyle(() => ({
+    opacity: fadeExpandedText.value,
+  }));
 
   /**
    * --------------------------------------------------------
-   * 5) handlePress in "idle" => fade out icons => shrink => onPress
+   * 4) Handle Width and Fade Animations
+   * --------------------------------------------------------
+   */
+  useEffect(() => {
+    if (shouldReduceMotion) {
+      if (scanStatus === 'idle') {
+        widthAnim.value = buttonWidth;
+        fadeIdleIcons.value = 1;
+        fadeExpandedText.value = 0;
+      } else if (scanStatus === 'loadingCircle') {
+        fadeIdleIcons.value = withTiming(0, { duration: 300 });
+        widthAnim.value = withTiming(halfWidth, { duration: 400 });
+        fadeExpandedText.value = 0;
+      } else if (scanStatus === 'loadingExpanded' || scanStatus === 'error') {
+        widthAnim.value = withTiming(buttonWidth * 1.1, { duration: 400 });
+        fadeExpandedText.value = withTiming(1, { duration: 300 });
+      }
+      return;
+    }
+
+    if (scanStatus === 'idle') {
+      widthAnim.value = withTiming(buttonWidth, {
+        duration: 400,
+        easing: Easing.inOut(Easing.quad),
+      });
+      fadeIdleIcons.value = withTiming(1, { duration: 400 });
+      fadeExpandedText.value = withTiming(0, { duration: 400 });
+    } else if (scanStatus === 'loadingCircle') {
+      fadeIdleIcons.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.out(Easing.quad),
+      });
+      widthAnim.value = withTiming(halfWidth, {
+        duration: 400,
+        easing: Easing.inOut(Easing.quad),
+      });
+      fadeExpandedText.value = withTiming(0, { duration: 400 });
+    } else if (scanStatus === 'loadingExpanded' || scanStatus === 'error') {
+      widthAnim.value = withTiming(buttonWidth * 1.1, {
+        duration: 400,
+        easing: Easing.inOut(Easing.quad),
+      }, () => {
+        fadeExpandedText.value = withTiming(1, {
+          duration: 300,
+          easing: Easing.inOut(Easing.quad),
+        });
+      });
+    }
+  }, [
+    scanStatus,
+    buttonWidth,
+    halfWidth,
+    widthAnim,
+    fadeIdleIcons,
+    fadeExpandedText,
+    shouldReduceMotion,
+  ]);
+
+  /**
+   * --------------------------------------------------------
+   * 5) Spinner Animation
+   * --------------------------------------------------------
+   */
+  useEffect(() => {
+    if (loading && !shouldReduceMotion) {
+      spinAnim.value = withRepeat(
+        withTiming(1, {
+          duration: 1000,
+          easing: Easing.linear,
+        }),
+        -1, // Infinite
+        false
+      );
+    } else {
+      cancelAnimation(spinAnim);
+      spinAnim.value = 0;
+    }
+  }, [loading, spinAnim, shouldReduceMotion]);
+
+  /**
+   * --------------------------------------------------------
+   * 6) Handle Press
    * --------------------------------------------------------
    */
   const handlePress = () => {
-    if (!isDisabled) {
-      Animated.sequence([
-        Animated.timing(fadeIdleIcons, {
-          toValue: 0,
-          duration: 300,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(widthAnim, {
-          toValue: halfWidth,
+    if (!isDisabled && !shouldReduceMotion) {
+      // Sequence animations: fade out icons and shrink button
+      fadeIdleIcons.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.out(Easing.quad),
+      }, () => {
+        widthAnim.value = withTiming(halfWidth, {
           duration: 400,
           easing: Easing.inOut(Easing.quad),
-          useNativeDriver: false,
-        }),
-      ]).start(() => {
-        onPress?.();
-        fadeIdleIcons.setValue(1);
+        }, () => {
+          runOnJS(onPress)();
+          // Optionally reset animations or handle post-press state
+          fadeIdleIcons.value = withTiming(1, { duration: 300 });
+        });
       });
+    } else if (!isDisabled && shouldReduceMotion) {
+      onPress();
     }
   };
-  
 
   /**
    * --------------------------------------------------------
-   * 6) Render
+   * 7) Render
    * --------------------------------------------------------
    */
   const iconSize = buttonHeight * iconSizeMultiplier;
-  const isIdle            = scanStatus === 'idle';
-  const isCircleMode      = scanStatus === 'loadingCircle';
-  const isExpandedMode    = scanStatus === 'loadingExpanded';
-  const isErrorMode    = scanStatus === 'error';
-
+  const isIdle = scanStatus === 'idle';
+  const isCircleMode = scanStatus === 'loadingCircle';
+  const isExpandedMode = scanStatus === 'loadingExpanded';
+  const isErrorMode = scanStatus === 'error';
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.animatedButton,
-          {
-            width: widthAnim,
-            height: buttonHeight,
-            borderRadius: buttonHeight / 2,
-            opacity: isDisabled ? 0.85 : 1, // Dim the button when disabled
-          },
-        ]}
-      >
-        <TouchableOpacity style={styles.touchable}
-         onPress={!isDisabled ? handlePress : undefined} // Prevent press when disabled
-         disabled={isDisabled} // Disable touch interaction
+      <Animated.View style={[styles.animatedButton, animatedButtonStyle]}>
+        <TouchableOpacity
+          style={styles.touchable}
+          onPress={!isDisabled ? handlePress : undefined}
+          disabled={isDisabled}
+          activeOpacity={0.7}
         >
-          
           {/** IDLE Icons */}
           {isIdle && (
-            <Animated.View style={{ opacity: fadeIdleIcons }}>
+            <Animated.View style={idleIconsStyle}>
               <View style={styles.textContainer}>
                 <Text style={styles.sideText}>Begin Scan</Text>
                 <View style={styles.iconWrapper}>
@@ -218,9 +247,8 @@ export default function BeginScanButton({
                     size={iconSize * 1.4}
                     color="#F0F8FF"
                   />
-                  <AnimatedScanLine iconSize={iconSize} />
+                  {!shouldReduceMotion && <AnimatedScanLine iconSize={iconSize} />}
                 </View>
-                {/* <Text style={styles.sideText}>Scan</Text> */}
               </View>
             </Animated.View>
           )}
@@ -229,7 +257,7 @@ export default function BeginScanButton({
           {loading && (
             <Animated.View
               style={[
-                spinStyle,
+                spinnerStyle,
                 isCircleMode ? styles.circleSpinner : styles.hiddenSpinner,
               ]}
             >
@@ -243,14 +271,13 @@ export default function BeginScanButton({
 
           {/** If expanded => text + spinner in a row */}
           {isExpandedMode && (
-            <Animated.View style={[styles.expandedRow, { opacity: fadeExpandedText }]}>
+            <Animated.View style={[styles.expandedRow, expandedTextStyle]}>
               <Text style={styles.expandedText}>
                 {scanText || 'Processing...'}
               </Text>
 
-              {/** A second spinner to the RIGHT of the text */}
               {loading && (
-                <Animated.View style={[spinStyle, { marginLeft: 8 }]}>
+                <Animated.View style={[spinnerStyle, { marginLeft: 8 }]}>
                   <AntDesign
                     name="loading2"
                     size={iconSize * 1.2}
@@ -263,11 +290,10 @@ export default function BeginScanButton({
 
           {/* ERROR Mode */}
           {isErrorMode && (
-            <Animated.View style={[styles.expandedRow, { opacity: fadeExpandedText }]}>
+            <Animated.View style={[styles.expandedRow, expandedTextStyle]}>
               <Text style={styles.expandedText}>
                 {scanText || 'Scan Error: Retake Photo'}
               </Text>
-              {/* No spinner => user sees message and can retake */}
             </Animated.View>
           )}
         </TouchableOpacity>
@@ -278,34 +304,39 @@ export default function BeginScanButton({
 
 /** Animated scan line for the idle icons */
 function AnimatedScanLine({ iconSize }: { iconSize: number }) {
-  const lineAnim = useRef(new Animated.Value(-iconSize * 0.3)).current;
+  const lineAnim = useSharedValue(-iconSize * 0.3);
+  const shouldReduceMotion = useReducedMotion();
+
+  const scanLineStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: lineAnim.value }],
+    width: iconSize * 1.4,
+  }));
+
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(lineAnim, {
-          toValue: iconSize * 0.4,
-          duration: 2100,
-          useNativeDriver: true,
-          easing: Easing.inOut(Easing.quad),
-        }),
-        Animated.timing(lineAnim, {
-          toValue: -iconSize * 0.3,
-          duration: 2100,
-          useNativeDriver: true,
-          easing: Easing.inOut(Easing.quad),
-        }),
-      ])
-    ).start();
-  }, [iconSize, lineAnim]);
+    if (shouldReduceMotion) {
+      lineAnim.value = 0;
+      return;
+    }
+
+    lineAnim.value = withRepeat(
+      withTiming(iconSize * 0.4, {
+        duration: 2100,
+        easing: Easing.inOut(Easing.quad),
+      }),
+      -1, // Infinite
+      true // Reverse
+    );
+  }, [iconSize, lineAnim, shouldReduceMotion]);
+
+  if (shouldReduceMotion) {
+    return null;
+  }
 
   return (
     <Animated.View
       style={[
         styles.scanLine,
-        {
-          width: iconSize * 1.4,
-          transform: [{ translateY: lineAnim }],
-        },
+        scanLineStyle,
       ]}
     />
   );
@@ -357,7 +388,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
-    marginRight:CONTENT_WIDTH*0.08
+    marginRight: CONTENT_WIDTH * 0.08,
   },
   svgIcon: {
     position: 'absolute',
@@ -391,7 +422,7 @@ const styles = StyleSheet.create({
   },
   expandedText: {
     fontSize: CONTENT_WIDTH * 0.06,
-    marginRight:CONTENT_WIDTH*0.05,
+    marginRight: CONTENT_WIDTH * 0.05,
     color: '#2F4F4F',
     // fontWeight: 'bold',
     fontFamily: 'Quicksand-Regular',

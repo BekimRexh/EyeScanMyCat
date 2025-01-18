@@ -11,6 +11,7 @@ import { cropCatFace } from '../components/catFaceCropper';
 import { detectConjunctivitis } from '../components/conjunctivitisDetection';
 
 import { useScanState } from './ScanStateContext';
+import ImageResizer from 'react-native-image-resizer';
 
 type ScanStatus = 
   | 'idle'            // Not scanning
@@ -23,14 +24,41 @@ export default function PhotoApprovalScreen() {
   // Props & local state
   // ----------------------------------------------------
   const { imageUri } = useLocalSearchParams();
-  const imageUrl = Array.isArray(imageUri) ? imageUri[0] : imageUri;
+  const [imageUrl, setImageUrl] = useState(
+    Array.isArray(imageUri) ? imageUri[0] : imageUri
+  );
+
 
   // const [imageUrl, setImageUri] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const assetImage = Image.resolveAssetSource(require('../assets/images/cats/alfie.jpg'));
-  //   setImageUri(assetImage.uri);
-  // }, []);
+  const [isConverted, setIsConverted] = useState(false); // Track if conversion has been done
+
+  useEffect(() => {
+    const convertToJpeg = async () => {
+      if (!imageUrl || isConverted) return; // Skip if already converted
+
+      try {
+        console.log('Converting image to JPEG...');
+        // Convert the image to JPEG
+        const response = await ImageResizer.createResizedImage(
+          imageUrl, // Input URI
+          800,      // Width
+          800,      // Height
+          'JPEG',   // Format
+          100       // Quality
+        );
+
+        // Update the state with the converted URI
+        setImageUrl(response.uri);
+        setIsConverted(true); // Mark as converted
+        console.log('Image converted successfully:', response.uri);
+      } catch (error) {
+        console.error('Error converting image to JPEG:', error);
+      }
+    };
+
+    convertToJpeg();
+  }, [imageUrl, isConverted]); // Dependency array includes `isConverted`
 
   const [loading, setLoading] = useState(true);
   const [showScanButton, setShowScanButton] = useState(true);

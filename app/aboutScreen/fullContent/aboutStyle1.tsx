@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Image, ViewStyle, ScrollView  } from 'react-native';
+import { View, StyleSheet, Text, Image, ViewStyle, ScrollView, Platform  } from 'react-native';
 import Header from '../header/header';
 import Footer from '../footer/Footer';
 import { useRouter, router } from 'expo-router';
@@ -13,11 +13,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { AccessibilityInfo } from 'react-native';
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withRepeat,
   withTiming,
+  useReducedMotion
 } from 'react-native-reanimated';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -39,6 +42,18 @@ const VerticalStack: React.FC<{
   const rowGapFraction = -0.02; 
   const desiredRowGap = availableHeight * rowGapFraction;
   const totalRowGapSpace = (rowCount - 1) * desiredRowGap;
+
+  const isReduceMotionEnabled = async () => {
+    if (Platform.OS === 'ios') {
+      try {
+        return await AccessibilityInfo.isReduceMotionEnabled();
+      } catch (error) {
+        console.warn('AccessibilityInfo isReduceMotionEnabled failed:', error);
+        return false; // Default value
+      }
+    }
+    return false; // Default for non-iOS platforms
+  };
 
   let calculatedRowHeights: number[];
 
@@ -426,203 +441,6 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           </View>
         );
 
-      case 'showImage': {
-        const cameraContainerStyle = props.cameraContainer
-      ? {
-          width: '100%',
-          height: '125%',
-          marginTop: -LAYOUT_MARGIN_VERTICAL * -7,
-          borderRadius: 40,
-          overflow: 'hidden',
-          borderWidth: 0,
-          borderColor: '#9FC6D6',
-          backgroundColor: '#000000',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }
-      : {
-          width: '100%',
-          height: '107%',
-          marginTop: -LAYOUT_MARGIN_VERTICAL * 9,
-          borderRadius: 40,
-          overflow: 'hidden',
-          borderWidth: 0,
-          borderColor: '#9FC6D6',
-          backgroundColor: '#000000',
-          justifyContent: 'center',
-          alignItems: 'center',
-        };
-
-        const [cameraContainerDimensions, setCameraContainerDimensions] = useState({
-          width: 0,
-          height: 0,
-          x: 0,
-          y: 0,
-        });
-      
-        const [imageDimensions, setImageDimensions] = useState({
-          width: 0,
-          height: 0,
-        });
-      
-        const horizontalScanPosition = useSharedValue(0);
-        const verticalScanPosition = useSharedValue(0);
-      
-        const horizontalAnimatedStyle = useAnimatedStyle(() => ({
-          transform: [{ translateX: horizontalScanPosition.value }],
-        }));
-      
-        const verticalAnimatedStyle = useAnimatedStyle(() => ({
-          transform: [{ translateY: verticalScanPosition.value }],
-        }));
-      
-        const animatedX = useSharedValue(0);
-        const animatedY = useSharedValue(0);
-        const animatedWidth = useSharedValue(cameraContainerDimensions.width);
-        const animatedHeight = useSharedValue(cameraContainerDimensions.height);
-      
-        const animatedStyle = useAnimatedStyle(() => ({
-          left: animatedX.value,
-          top: animatedY.value,
-          width: animatedWidth.value,
-          height: animatedHeight.value,
-        }));
-      
-        useEffect(() => {
-          if (props.imageUrl) {
-            Image.getSize(props.imageUrl, (width, height) => {
-              setImageDimensions({ width, height });
-            });
-          }
-        }, [props.imageUrl]);
-      
-        useEffect(() => {
-          if (props.showHorizontalAnimation) {
-            horizontalScanPosition.value = withRepeat(
-              withTiming(cameraContainerDimensions.width - 15, { duration: 4000 }),
-              -1,
-              true
-            );
-          } else {
-            horizontalScanPosition.value = 0;
-          }
-      
-          if (props.showVerticalAnimation) {
-            verticalScanPosition.value = withRepeat(
-              withTiming(cameraContainerDimensions.height - 15, { duration: 4000 }),
-              -1,
-              true
-            );
-          } else {
-            verticalScanPosition.value = 0;
-          }
-        }, [
-          props.showHorizontalAnimation,
-          props.showVerticalAnimation,
-          cameraContainerDimensions,
-        ]);
-      
-        useEffect(() => {
-          if (props.showBoundingBoxAnimation && props.boundingBox) {
-            const aspectRatioImage = imageDimensions.width / imageDimensions.height;
-            const aspectRatioContainer =
-              cameraContainerDimensions.width / cameraContainerDimensions.height;
-      
-            let scaleFactorX = 1;
-            let scaleFactorY = 1;
-            let offsetX = 0;
-            let offsetY = 0;
-      
-            if (aspectRatioImage > aspectRatioContainer) {
-              // Image is wider than the container
-              scaleFactorX = cameraContainerDimensions.height / imageDimensions.height;
-              scaleFactorY = scaleFactorX;
-              offsetX =
-                (cameraContainerDimensions.width -
-                  imageDimensions.width * scaleFactorX) /
-                2;
-            } else {
-              // Image is taller than the container
-              scaleFactorY = cameraContainerDimensions.width / imageDimensions.width;
-              scaleFactorX = scaleFactorY;
-              offsetY =
-                (cameraContainerDimensions.height -
-                  imageDimensions.height * scaleFactorY) /
-                2;
-            }
-      
-            const targetBox = {
-              x: offsetX + props.boundingBox.x * scaleFactorX,
-              y: offsetY + props.boundingBox.y * scaleFactorY,
-              width: props.boundingBox.width * scaleFactorX,
-              height: props.boundingBox.height * scaleFactorY,
-            };
-      
-            // Animate the bounding box
-            animatedX.value = withTiming(targetBox.x, { duration: 2000 });
-            animatedY.value = withTiming(targetBox.y, { duration: 2000 });
-            animatedWidth.value = withTiming(targetBox.width, { duration: 2000 });
-            animatedHeight.value = withTiming(targetBox.height, { duration: 2000 });
-          }
-        }, [
-          props.showBoundingBoxAnimation,
-          props.boundingBox,
-          imageDimensions,
-          cameraContainerDimensions,
-        ]);
-      
-        return (
-          <View
-            style={[styles.cameraContainer, cameraContainerStyle as ViewStyle]}
-            onLayout={(event) => {
-              const { width, height, x, y } = event.nativeEvent.layout;
-              setCameraContainerDimensions({ width, height, x, y });
-            }}
-          >
-            {props.croppedUri ? (
-            <>
-              {/* Enlarged blurred background */}
-              <Image
-                source={{ uri: props.croppedUri }}
-                style={styles.enlargedBlurredBackground}
-                blurRadius={4}
-              />
-              {/* Cropped image with resizeMode: contain */}
-              <Image source={{ uri: props.croppedUri }} style={styles.croppedCamera} />
-            </>
-          ) : props.imageUrl ? (
-              <>
-                <Image source={{ uri: props.imageUrl }} style={styles.camera} />
-                {props.showHorizontalAnimation && (
-                  <Animated.View
-                    style={[styles.horizontalScanBar, horizontalAnimatedStyle]}
-                  />
-                )}
-                {props.showVerticalAnimation && (
-                  <Animated.View
-                    style={[styles.verticalScanBar, verticalAnimatedStyle]}
-                  />
-                )}
-                {props.showBoundingBoxAnimation && (
-                  <Animated.View
-                    style={[
-                      animatedStyle,
-                      {
-                        position: 'absolute',
-                        borderColor: '#F4F3F3',
-                        borderWidth: 2,
-                        borderRadius: 10, // Add rounded corners
-                      },
-                    ]}
-                  />
-                )}
-              </>
-            ) : (
-              <Text style={{ color: '#F4F3F3', textAlign: 'center' }}>No image provided</Text>
-            )}
-          </View>
-        );
-      }
     
       case 'showStaticImage': {
         return (

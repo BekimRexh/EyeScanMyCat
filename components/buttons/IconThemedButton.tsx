@@ -30,11 +30,11 @@ const IconThemedButton: React.FC<IconThemedButtonProps> = ({
   type = 'primary',
   IconComponent,
   iconName,
-  iconSizeMultiplier = 0.95,
+  iconSizeMultiplier = 1.03,
   iconColor = '#2F4F4F',
   borderRadiusMultiplier = 0.14,
   heightMultiplier = 0.3,
-  widthMultiplier = 0.21,
+  widthMultiplier = 0.22,
   backgroundColor = '#5ca7c445',
   backgroundDarker = '#f0f4f6',
   raiseLevel = 2.5,
@@ -68,8 +68,9 @@ const IconThemedButton: React.FC<IconThemedButtonProps> = ({
         onPress={!disabled ? onPress : undefined}
         height={buttonHeight}
         width={buttonWidth}
-        paddingTop={paddingTop}
+        paddingTop={paddingTop*1.1}
         paddingBottom={paddingBottom}
+        paddingHorizontal={-30}
         disabled={disabled}
       >
         <View>

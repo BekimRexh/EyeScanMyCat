@@ -12,7 +12,7 @@ import { useRouter } from 'expo-router';
 import CircularMenuButton from '../components/buttons/CircularMenuButton';
 import { Entypo, AntDesign, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { CONTENT_HEIGHT, CONTENT_WIDTH } from '../assets/utils/dimensions';
-
+import { useReducedMotion } from 'react-native-reanimated'; // Import useReducedMotion
 
 const { width } = Dimensions.get('window');
 
@@ -20,14 +20,14 @@ const { width } = Dimensions.get('window');
 // Dynamically scale dimensions based on CONTENT_HEIGHT and CONTENT_WIDTH
 const circleSize = Math.min(CONTENT_WIDTH * 0.75, CONTENT_HEIGHT * 0.35);
 const buttonSize = circleSize * 0.45; // Scale button size relative to circle size
-const radius = circleSize * 0.58;    // Scale radius relative to circle size
-
+const radius = circleSize * 0.58; // Scale radius relative to circle size
 
 // One tip's width in the marquee
 const TIP_WIDTH = Math.min(width * 0.85, 320);
 
 export default function HomeScreen() {
   const router = useRouter();
+  const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
 
   /***************************************************************
    * 1) TIPS MARQUEE (CONTINUOUS SCROLL)
@@ -66,20 +66,26 @@ export default function HomeScreen() {
   const totalContentWidth = tips.length * TIP_WIDTH; // 20 * TIP_WIDTH
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      // If reduced motion is preferred, set scrollX to a static value
+      scrollX.setValue(0);
+      return;
+    }
+
     scrollX.setValue(160); // Set initial offset
     const segmentWidth = TIP_WIDTH;
     const duration = 800;
     const pauseDuration = 7000;
     const totalWidth = -(originalTips.length * TIP_WIDTH);
     const resetDuration = 4000; // Duration for slow return to the start
-  
+
     let currentTip = 0;
-  
+
     const animateSegment = () => {
       if (currentTip < originalTips.length) {
         const nextPosition = -(currentTip * segmentWidth) + 160;
         currentTip += 1;
-  
+
         Animated.timing(scrollX, {
           toValue: nextPosition,
           duration,
@@ -105,13 +111,11 @@ export default function HomeScreen() {
         });
       }
     };
-  
+
     animateSegment();
-  
+
     return () => scrollX.stopAnimation();
-  }, [scrollX]);
-  
-  
+  }, [scrollX, shouldReduceMotion]);
 
   /***************************************************************
    * 2) CIRCLE ROTATION
@@ -128,22 +132,33 @@ export default function HomeScreen() {
   });
 
   useEffect(() => {
-    Animated.loop(
+    if (shouldReduceMotion) {
+      // If reduced motion is preferred, do not start rotation
+      revolveAnim.setValue(0);
+      return;
+    }
+
+    const rotationLoop = Animated.loop(
       Animated.timing(revolveAnim, {
         toValue: 1,
         duration: 40000,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-    ).start();
-  }, [revolveAnim]);
+    );
+    rotationLoop.start();
+
+    return () => {
+      rotationLoop.stop();
+    };
+  }, [revolveAnim, shouldReduceMotion]);
 
   /***************************************************************
    * 3) RENDER
    ***************************************************************/
   return (
     <View style={styles.container}>
-      {/* Row for Circle Menu */}
+      {/* Row for Logo */}
       <View style={styles.logoWrapper}>
         <Image
           source={require('../assets/images/eyeScanMyCatFullLogo.png')}
@@ -151,12 +166,16 @@ export default function HomeScreen() {
           resizeMode="contain"
         />
       </View>
+
+      {/* Row for Circle Menu */}
       <View style={styles.circleMenuWrapper}>
         <View style={styles.circleContainer}>
           <Animated.View
             style={[
               styles.rotatingParent,
-              { transform: [{ rotate: revolve }] },
+              shouldReduceMotion
+                ? {} // No rotation if reduced motion is preferred
+                : { transform: [{ rotate: revolve }] },
             ]}
           >
             {[
@@ -194,7 +213,7 @@ export default function HomeScreen() {
               const angle = (i / 5) * 2 * Math.PI - Math.PI / 2;
               const x = radius * Math.cos(angle);
               const y = radius * Math.sin(angle);
-  
+
               return (
                 <View
                   key={i}
@@ -206,7 +225,13 @@ export default function HomeScreen() {
                     },
                   ]}
                 >
-                  <Animated.View style={{ transform: [{ rotate: revolveBack }] }}>
+                  <Animated.View
+                    style={
+                      shouldReduceMotion
+                        ? {}
+                        : { transform: [{ rotate: revolveBack }] }
+                    }
+                  >
                     <CircularMenuButton
                       onPress={btn.onPress}
                       iconName={btn.iconName}
@@ -215,7 +240,7 @@ export default function HomeScreen() {
                         width: buttonSize,
                         height: buttonSize,
                       }}
-                      iconSize={CONTENT_HEIGHT*0.09}
+                      iconSize={CONTENT_HEIGHT * 0.09}
                     />
                     <Text style={styles.circularButtonText}>{btn.text}</Text>
                   </Animated.View>
@@ -225,7 +250,7 @@ export default function HomeScreen() {
           </Animated.View>
         </View>
       </View>
-  
+
       {/* Row for Marquee */}
       <View style={styles.marqueeWrapper}>
         <Animated.View
@@ -233,7 +258,9 @@ export default function HomeScreen() {
             styles.marqueeContent,
             {
               width: totalContentWidth,
-              transform: [{ translateX: scrollX }],
+              transform: shouldReduceMotion
+                ? [{ translateX: 0 }] // No translation if reduced motion is preferred
+                : [{ translateX: scrollX }],
             },
           ]}
         >
@@ -250,18 +277,13 @@ export default function HomeScreen() {
                 style={styles.tipImage}
                 resizeMode="cover"
               />
-                            <Text style={styles.tipText}>{tip.text}</Text>
-
+              <Text style={styles.tipText}>{tip.text}</Text>
             </View>
           ))}
         </Animated.View>
       </View>
-  
-      {/* Row for Logo */}
-      
     </View>
   );
-  
 }
 
 /***************************************************************
@@ -276,7 +298,7 @@ const styles = StyleSheet.create({
 
   // Circle Menu Row
   circleMenuWrapper: {
-    marginTop:CONTENT_HEIGHT*-0.01,
+    marginTop: CONTENT_HEIGHT * -0.01,
     flex: 3, // Adjust the proportion for the circle menu
     justifyContent: 'center',
     alignItems: 'center',
@@ -304,7 +326,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   circularButtonText: {
-    fontSize: CONTENT_HEIGHT*0.025,
+    fontSize: CONTENT_HEIGHT * 0.025,
     color: '#2F4F4F',
     marginTop: 5,
     textAlign: 'center',
@@ -315,8 +337,8 @@ const styles = StyleSheet.create({
     flex: 2.5, // Adjust the proportion for the marquee
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:CONTENT_HEIGHT*-0.1,
-    marginBottom:CONTENT_HEIGHT*-0.02,
+    marginTop: CONTENT_HEIGHT * -0.1,
+    marginBottom: CONTENT_HEIGHT * -0.02,
     height: CONTENT_HEIGHT * 0.3, // Use relative height
     overflow: 'hidden',
   },
@@ -332,16 +354,16 @@ const styles = StyleSheet.create({
   tipImage: {
     width: '90%',
     height: '70%',
-    borderRadius:50,
+    borderRadius: 50,
     marginBottom: 5,
   },
   tipText: {
-    fontSize: CONTENT_HEIGHT*0.028,
+    fontSize: CONTENT_HEIGHT * 0.028,
     fontFamily: 'Quicksand-Regular',
     color: '#2F4F4F',
     textAlign: 'center',
     maxWidth: '85%',
-    marginTop: CONTENT_HEIGHT*0.01
+    marginTop: CONTENT_HEIGHT * 0.01,
   },
 
   // Logo Row
@@ -351,9 +373,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerLogo: {
-    marginTop:CONTENT_HEIGHT*0.1,
-    width: CONTENT_WIDTH*0.8,
-    height: CONTENT_HEIGHT*0.3,
+    marginTop: CONTENT_HEIGHT * 0.1,
+    width: CONTENT_WIDTH * 0.8,
+    height: CONTENT_HEIGHT * 0.3,
   },
 });
-

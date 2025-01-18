@@ -1,96 +1,4 @@
-// import * as tf from '@tensorflow/tfjs';
-// import '@tensorflow/tfjs-react-native';
-// // import { bundleResourceIO, decodeJpeg } from '@tensorflow/tfjs-react-native';
 
-// class L2 {
-//   static className = 'L2';
-//   constructor(private l2: number = 0.001) {}
-//   apply(x: tf.Tensor) {
-//     return tf.mul(this.l2, tf.sum(tf.square(x)));
-//   }
-//   getConfig() {
-//     return { l2: this.l2 };
-//   }
-//   static fromConfig(cls: any, config: any) {
-//     return new cls(config.l2);
-//   }
-// }
-
-// tf.serialization.registerClass(L2);
-
-// export async function detectCat(uri: string): Promise<boolean> {
-//   try {
-//     await tf.ready();
-
-//     const modelJson = require('../assets/catFaceDetectionFiles/cat_detect_model/model.json');
-//     const modelWeights = [
-//       require('../assets/catFaceDetectionFiles/cat_detect_model/group1-shard1of1.bin'),
-//     ];
-//     const model = await tf.loadGraphModel(bundleResourceIO(modelJson, modelWeights));
-
-//     const inputTensor = await preprocessImage(uri);
-//     const predictions = model.execute(inputTensor) as tf.Tensor;
-
-//     // Add the debug logic here
-//     return await decodePredictions(predictions, 0.5);
-//   } catch (error) {
-//     console.error('Error detecting cat face:', error);
-//     return false;
-//   }
-// }
-
-// const preprocessImage = async (uri: string) => {
-//   const response = await fetch(uri);
-//   if (!response.ok) {
-//     throw new Error(`Failed to fetch image at URI: ${uri}, Status: ${response.status}`);
-//   }
-
-//   const imageData = await response.arrayBuffer();
-//   const imageTensor = decodeJpeg(new Uint8Array(imageData), 3);
-//   const resizedImage = tf.image.resizeBilinear(imageTensor, [640, 640]);
-//   const normalizedImage = resizedImage.div(255.0);
-//   const batchedImage = normalizedImage.expandDims(0);
-
-//   return batchedImage;
-// };
-
-// const decodePredictions = async (predictions: tf.Tensor, confidenceThreshold: number): Promise<boolean> => {
-//   console.log("========== Inference Debug Information ==========");
-
-//   // Print out the raw predictions shape (should be [1, 5, 8400] for YOLO-like output)
-//   console.log("Raw Predictions Tensor Shape:", predictions.shape);
-
-//   // Squeeze batch dimension [1,5,8400] -> [5,8400]
-//   const squeezedPredictions = predictions.squeeze();
-//   console.log("Squeezed Predictions Tensor Shape:", squeezedPredictions.shape);
-
-//   // Extract coordinates and confidence from the squeezed predictions
-//   const [xCenter, yCenter, width, height, confidence] = tf.split(squeezedPredictions, 5, 0); 
-
-//   // Convert confidence to a JS array and print a sample for inspection
-//   const confidenceArray = (await confidence.array()) as number[];
-//   // console.log("Confidence values (first 10):", confidenceArray.slice(0, 10));
-
-//   // Find indices with confidence > threshold
-//   let detected = false;
-//   console.log(`\nChecking for detections with confidence > ${confidenceThreshold}...\n`);
-
-//   const confidenceVals = confidence.dataSync(); // Float32Array of length 8400
-//   console.log("Max confidence:", Math.max(...confidenceVals));
-
-//   for (let i = 0; i < confidenceVals.length; i++) {
-//     if (confidenceVals[i] > confidenceThreshold) {
-//       detected = true;
-//       console.log(`Object detected at index ${i} with confidence: ${confidenceVals[i]}`);
-//       break;
-//     }
-//   }
-//   if (!detected) {
-//     console.log("No objects detected above the confidence threshold.");
-//   }
-
-//   return detected;
-// };
 
 
 import { loadTensorflowModel } from 'react-native-fast-tflite';
@@ -110,12 +18,12 @@ export async function detectCat(uri: string): Promise<boolean> {
     // **Step 2: Preprocess the image**
     console.log('Preprocessing image...');
     const inputTensor = await preprocessImage(uri);
-    console.log('Image preprocessed.');
+    // console.log('Image preprocessed.');
 
     // **Step 3: Run inference**
     console.log('Running inference...');
     const outputs = await model.run([inputTensor]);
-    console.log('Raw model outputs:', outputs);
+    // console.log('Raw model outputs:', outputs);
 
     // **Step 4: Decode predictions with confidence threshold**
     const detected = decodePredictions(outputs, 0.5);
@@ -196,7 +104,7 @@ const decodePredictions = (outputs: any, confidenceThreshold: number): boolean =
 
   // Process confidence scores from the reshaped tensor
   const confidenceScores = reshapedDetections[0][4]; // Focus on the 5th row (confidence scores) for all 8400 cells
-  console.log("Confidence scores for detections:", confidenceScores);
+  // console.log("Confidence scores for detections:", confidenceScores);
 
   // Find the maximum confidence score
   const maxConfidence = Math.max(...confidenceScores);

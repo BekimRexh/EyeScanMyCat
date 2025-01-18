@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#E0E0E0',
     paddingBottom: LAYOUT_MARGIN_VERTICAL,
     paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL,
+    overflow:'hidden'
   },
   buttonWrapper: {
     justifyContent: 'center',

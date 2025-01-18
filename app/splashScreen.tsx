@@ -1,42 +1,55 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, Alert } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Animated, Alert, AccessibilityInfo } from 'react-native';
 import { Video } from 'expo-av';
 import * as SplashScreen from 'expo-splash-screen';
 
-// Define the props interface
 interface SplashScreenProps {
-  onAnimationComplete: () => void; // Function type with no arguments and no return value
+  onAnimationComplete: () => void;
 }
 
 const SplashScreenComponent: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
   const fadeAnim = useRef(new Animated.Value(1)).current; // Animation for fading out
   const videoRef = useRef<Video>(null);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
-    const preventSplashHide = async () => {
-      await SplashScreen.preventAutoHideAsync();
+    const init = async () => {
+      try {
+        await SplashScreen.preventAutoHideAsync(); // Prevent auto-hide
+        const isReduceMotionEnabled = await AccessibilityInfo.isReduceMotionEnabled();
+        setReduceMotion(isReduceMotionEnabled);
+      } catch (error) {
+        console.warn('Error during splash setup:', error);
+      }
     };
-    preventSplashHide();
+
+    init();
   }, []);
 
-  const onPlaybackStatusUpdate = async (status) => {
+  const onPlaybackStatusUpdate = async (status: any) => {
     if (status.didJustFinish) {
       try {
-        // Pause the video at its last frame
+        // Pause the video at the last frame
         if (videoRef.current) {
           await videoRef.current.setPositionAsync(status.durationMillis);
           await videoRef.current.pauseAsync();
         }
 
         // Start fade-out animation for the video
-        Animated.timing(fadeAnim, {
-          toValue: 0, // Fully transparent
-          duration: 2500, // Duration of fade-out effect
-          useNativeDriver: true,
-        }).start(() => {
+        if (!reduceMotion) {
+          Animated.timing(fadeAnim, {
+            toValue: 0, // Fully transparent
+            duration: 2500, // Duration of fade-out effect
+            useNativeDriver: true,
+          }).start(() => {
+            SplashScreen.hideAsync();
+            onAnimationComplete();
+          });
+        } else {
+          // Skip animation and hide splash screen immediately
           SplashScreen.hideAsync();
-          onAnimationComplete(); // Notify RootLayout that splash is complete
-        });
+          onAnimationComplete();
+        }
       } catch (error) {
         console.error('Error during fade-out:', error);
         SplashScreen.hideAsync();
@@ -48,23 +61,31 @@ const SplashScreenComponent: React.FC<SplashScreenProps> = ({ onAnimationComplet
   const handleVideoError = () => {
     Alert.alert('Error', 'Failed to load the splash screen video.');
     SplashScreen.hideAsync();
-    onAnimationComplete(); // Notify RootLayout even on error
+    onAnimationComplete();
   };
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ opacity: fadeAnim, ...styles.videoWrapper }}>
-        <Video
-          ref={videoRef}
-          source={require('../assets/animations/meowmediclogo2.mp4')}
-          resizeMode="contain"
-          rate={1.5} // Start the video at 1.5x speed
-          shouldPlay
-          onPlaybackStatusUpdate={onPlaybackStatusUpdate}
-          onError={handleVideoError}
-          style={styles.video}
-        />
-      </Animated.View>
+      {reduceMotion ? (
+        // Static splash screen for users with "Reduce Motion" enabled
+        <View style={styles.staticSplash}>
+          {/* Replace with your static splash image or logo */}
+          <View style={styles.staticLogo} />
+        </View>
+      ) : (
+        <Animated.View style={[styles.videoWrapper, { opacity: fadeAnim }]}>
+          <Video
+            ref={videoRef}
+            source={require('../assets/animations/meowmediclogo2.mp4')}
+            resizeMode="contain"
+            rate={1.5} // Playback speed
+            shouldPlay
+            onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+            onError={handleVideoError}
+            style={styles.video}
+          />
+        </Animated.View>
+      )}
     </View>
   );
 };
@@ -74,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff', // Background remains white
+    backgroundColor: '#ffffff', // Ensure white background
   },
   videoWrapper: {
     width: '100%',
@@ -84,6 +105,19 @@ const styles = StyleSheet.create({
   video: {
     width: '100%',
     height: '100%',
+  },
+  staticSplash: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff', // Match your splash screen background
+  },
+  staticLogo: {
+    width: 150, // Adjust as needed
+    height: 150,
+    backgroundColor: '#cccccc', // Placeholder for your static logo
+    borderRadius: 75,
   },
 });
 
