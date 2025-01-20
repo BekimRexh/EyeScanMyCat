@@ -23,15 +23,15 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 const VerticalStack: React.FC<{ 
   rows?: any[], 
   rowLayoutType?: 'equal' | 'topHeavy' | 'bottomHeavy' | 'middleHeavy',
-  rowHeights?: number[], // New prop for custom row heights
+  rowHeights?: number[], 
   columnGap?: number, 
 }> = ({ rows = [], rowLayoutType = 'equal', rowHeights = [], columnGap = -0.19 }) => {
   
-  const availableHeight = CONTENT_HEIGHT; // Total available height for rows
-  const availableWidth = CONTENT_WIDTH;  // Total available width for columns
+  const availableHeight = CONTENT_HEIGHT; 
+  const availableWidth = CONTENT_WIDTH;  
   const rowCount = rows.length || 1;
 
-  // Fractional gap for rows
+  
   const rowGapFraction = 0.02; 
   const desiredRowGap = availableHeight * rowGapFraction;
   const totalRowGapSpace = (rowCount - 1) * desiredRowGap;
@@ -39,27 +39,27 @@ const VerticalStack: React.FC<{
   let calculatedRowHeights: number[];
 
   if (rowHeights.length === rowCount) {
-    // Use provided rowHeights if they match the row count
+   
     const totalCustomHeight = rowHeights.reduce((sum, ratio) => sum + ratio, 0);
     calculatedRowHeights = rowHeights.map(ratio => (ratio / totalCustomHeight) * (availableHeight - totalRowGapSpace));
   } else if (rowLayoutType === 'equal') {
-    // Default to equal heights
+    
     const totalRowHeight = availableHeight - totalRowGapSpace;
     const rowHeight = totalRowHeight / rowCount;
     calculatedRowHeights = Array(rowCount).fill(rowHeight);
   } else if (rowLayoutType === 'topHeavy') {
     const adjustedHeight = availableHeight - totalRowGapSpace;
-    const topRowHeight = adjustedHeight * 0.7; // 80% for the top row
+    const topRowHeight = adjustedHeight * 0.7; 
     const otherRowHeight = (adjustedHeight - topRowHeight) / (rowCount - 1);
     calculatedRowHeights = [topRowHeight, ...Array(rowCount - 1).fill(otherRowHeight)];
   } else if (rowLayoutType === 'bottomHeavy') {
     const adjustedHeight = availableHeight - totalRowGapSpace;
-    const bottomRowHeight = adjustedHeight * 0.7; // 80% for the bottom row
+    const bottomRowHeight = adjustedHeight * 0.7; 
     const otherRowHeight = (adjustedHeight - bottomRowHeight) / (rowCount - 1);
     calculatedRowHeights = [...Array(rowCount - 1).fill(otherRowHeight), bottomRowHeight];
   } else if (rowLayoutType === 'middleHeavy') {
     const adjustedHeight = availableHeight - totalRowGapSpace;
-    const middleRowHeight = adjustedHeight * 0.7; // 80% for the middle row
+    const middleRowHeight = adjustedHeight * 0.7; 
     const otherRowHeight = (adjustedHeight - middleRowHeight) / (rowCount - 1);
     const middleIndex = Math.floor(rowCount / 2);
     calculatedRowHeights = Array(rowCount)
@@ -70,14 +70,14 @@ const VerticalStack: React.FC<{
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      
       <Header 
         items={[
           {
             type: 'iconButton',
             props: {
               name: 'rick',
-              IconComponent: Entypo, // Replace with your icon library
+              IconComponent: Entypo, 
               iconName: 'text-document',
               heightMultiplier: 0.18,
               widthMultiplier:0.17,
@@ -91,7 +91,7 @@ const VerticalStack: React.FC<{
             type: 'iconButton',
             props: {
               name: 'rick',
-              IconComponent: AntDesign, // Replace with your icon library
+              IconComponent: AntDesign, 
               iconName: 'questioncircleo',
               heightMultiplier: 0.18,
               widthMultiplier:0.17,
@@ -105,7 +105,7 @@ const VerticalStack: React.FC<{
         layoutType="equal" 
       />
 
-      {/* Main Content Area */}
+      
       <View style={{ height: CONTENT_HEIGHT }}>
         {rows.map((row, rowIndex) => {
           const rowHeight = calculatedRowHeights[rowIndex];
@@ -113,19 +113,19 @@ const VerticalStack: React.FC<{
 
           const columnCount = items.length || 1;
 
-          // Column gap calculation
+         
           const desiredColumnGap = availableWidth * columnGap;
           const totalColumnGapSpace = (columnCount - 1) * desiredColumnGap;
 
-          // Adjusted width for columns
+        
           const adjustedColumnWidth = availableWidth - totalColumnGapSpace;
           const columnWidths = Array(columnCount).fill(adjustedColumnWidth / columnCount);
 
           if (columnLayoutType === 'leftWide') {
-            columnWidths[0] = adjustedColumnWidth * 0.6; // Wide column
+            columnWidths[0] = adjustedColumnWidth * 0.6; 
             columnWidths.fill(adjustedColumnWidth * 0.4 / (columnCount - 1), 1);
           } else if (columnLayoutType === 'rightWide') {
-            columnWidths[columnWidths.length - 1] = adjustedColumnWidth * 0.6; // Wide column
+            columnWidths[columnWidths.length - 1] = adjustedColumnWidth * 0.6; 
             columnWidths.fill(adjustedColumnWidth * 0.4 / (columnCount - 1), 0, columnWidths.length - 1);
           }
 
@@ -134,7 +134,7 @@ const VerticalStack: React.FC<{
               key={rowIndex} 
               style={[
                 styles.rowContainer, 
-                { height: rowHeight, marginBottom: rowIndex !== rowCount - 1 ? desiredRowGap : 0 } // Row gaps
+                { height: rowHeight, marginBottom: rowIndex !== rowCount - 1 ? desiredRowGap : 0 } 
               ]}
             >
               {items.map((item, colIndex) => (
@@ -142,7 +142,7 @@ const VerticalStack: React.FC<{
                   key={colIndex} 
                   style={{
                     width: columnWidths[colIndex],
-                    marginRight: colIndex !== columnCount - 1 ? desiredColumnGap : 0, // Column gaps
+                    marginRight: colIndex !== columnCount - 1 ? desiredColumnGap : 0, 
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -156,7 +156,7 @@ const VerticalStack: React.FC<{
       </View>
 
 
-      {/* Footer */}
+      
       <Footer 
         buttons={[
           { line1: 'Home', onPress: () => router.push('/HomeScreen') },
@@ -198,7 +198,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
 
     case 'camera':
       return (
-        // <View style={styles.cameraWrapper}>
+        
           <View style={styles.cameraContainer}>
             <GestureDetector gesture={props.tapGesture}>
               <CameraView
@@ -218,16 +218,16 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 )}
               </CameraView>
             </GestureDetector>
-          {/* </View> */}
+         
         </View>
       );
 
-        case 'cameraSVG': // New case for a tappable camera container
+        case 'cameraSVG': 
           return (
             <View
               style={[
                 styles.cameraContainer,
-                { height: rowHeight, width: columnWidth }, // Dynamically set dimensions
+                { height: rowHeight, width: columnWidth }, 
               ]}
             >
               <GestureDetector gesture={props.tapGesture}>
@@ -249,7 +249,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 </CameraView>
               </GestureDetector>
 
-                {/* SVG Overlay */}
+                
                 <View style={[styles.svgContainer]}>
                   <Svg
                   style={styles.svgOverlay}
@@ -257,8 +257,8 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 >
                   <Path
                     fill="transparent"
-                    stroke="#9FC6D6" // Outline color
-                    strokeWidth="0.15" // Adjust thickness as needed
+                    stroke="#9FC6D6" 
+                    strokeWidth="0.15" 
                     d="M3.03675 2.49516C3.262 2.10996 3.7152 1.92062 4.14754 2.03109C5.97557 2.49817 7.55118 3.2517 9.03129 4.3653C9.96974 4.05942 10.9671 3.8947 12 3.8947C13.0328 3.8947 14.0302 4.05942 14.9687 4.3653C16.4488 3.2517 18.0244 2.49817 19.8524 2.03109C20.2848 1.92062 20.738 2.10996 20.9632 2.49516C21.6136 3.60735 21.682 4.84507 21.5423 5.95618C21.4242 6.89524 21.1479 7.81637 20.8761 8.60644C21.5951 10.0574 22 11.7048 22 13.4473C22 14.0796 21.9465 14.6779 21.8433 15.242L22.7737 15.0259C23.3117 14.9009 23.8491 15.2357 23.974 15.7737C24.099 16.3117 23.7642 16.8491 23.2262 16.974L21.0977 17.4685C20.7875 18.072 20.4027 18.6166 19.9517 19.1014L20.6281 19.7012C21.0414 20.0677 21.0793 20.6997 20.7129 21.1129C20.3465 21.5261 19.7144 21.5641 19.3012 21.1976L18.3886 20.3884C16.6081 21.5099 14.358 22 12 22C9.64192 22 7.39187 21.5099 5.61135 20.3884L4.69872 21.1977C4.2855 21.5641 3.65348 21.5261 3.28705 21.1129C2.92063 20.6997 2.95856 20.0677 3.37179 19.7012L4.04822 19.1014C3.59721 18.6166 3.21244 18.072 2.90229 17.4685L0.773707 16.974C0.235747 16.8491 -0.0990517 16.3117 0.0259144 15.7737C0.150881 15.2357 0.688289 14.9009 1.22625 15.0259L2.15669 15.242C2.05349 14.6779 1.99998 14.0796 1.99998 13.4473C1.99998 11.7048 2.40488 10.0574 3.12385 8.60644C2.85211 7.81637 2.57578 6.89524 2.45771 5.95618C2.318 4.84507 2.38635 3.60735 3.03675 2.49516Z"
                   />
                 </Svg>
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000', 
     justifyContent: 'center', 
     alignItems: 'center',
-    pointerEvents: 'auto', // Ensure touch events are not ignored
+    pointerEvents: 'auto', 
   },
   camera: {
     ...StyleSheet.absoluteFillObject,
@@ -329,17 +329,17 @@ const styles = StyleSheet.create({
   },
   focusSquare: {
     position: 'absolute',
-    // marginTop: -LAYOUT_MARGIN_VERTICAL*9,
+    
     width: 50,
     height: 50,
     borderWidth: 2,
     borderColor: 'white',
   },
   svgContainer: {
-    flex: 1, // Allow the SVG to scale dynamically
+    flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1, // Ensure it renders above the camera feed
+    zIndex: 1, 
     pointerEvents:"none"
   },
   svgOverlay: {
@@ -357,8 +357,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   box: {
-    width: 50, // Box size
-    height: 50, // Box size
+    width: 50, 
+    height: 50, 
     backgroundColor: 'blue',
     borderRadius: 5,
   },

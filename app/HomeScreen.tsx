@@ -12,29 +12,27 @@ import { useRouter } from 'expo-router';
 import CircularMenuButton from '../components/buttons/CircularMenuButton';
 import { Entypo, AntDesign, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import { CONTENT_HEIGHT, CONTENT_WIDTH } from '../assets/utils/dimensions';
-import { useReducedMotion } from 'react-native-reanimated'; // Import useReducedMotion
+import { useReducedMotion } from 'react-native-reanimated'; 
 
 const { width } = Dimensions.get('window');
 
-// Circle dimensions
-// Dynamically scale dimensions based on CONTENT_HEIGHT and CONTENT_WIDTH
-const circleSize = Math.min(CONTENT_WIDTH * 0.75, CONTENT_HEIGHT * 0.35);
-const buttonSize = circleSize * 0.45; // Scale button size relative to circle size
-const radius = circleSize * 0.58; // Scale radius relative to circle size
 
-// One tip's width in the marquee
+
+const circleSize = Math.min(CONTENT_WIDTH * 0.75, CONTENT_HEIGHT * 0.35);
+const buttonSize = circleSize * 0.45; 
+const radius = circleSize * 0.58; 
+
+
 const TIP_WIDTH = Math.min(width * 0.85, 320);
 
 export default function HomeScreen() {
   const router = useRouter();
-  const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
+  const shouldReduceMotion = useReducedMotion(); 
 
-  /***************************************************************
-   * 1) TIPS MARQUEE (CONTINUOUS SCROLL)
-   ***************************************************************/
+
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  // Original array of tips
+
   const originalTips = [
     { text: "Regular eye scans can prevent serious conditions.", 
       image: require('../assets/images/tipCats/tip1.jpg') },
@@ -58,26 +56,26 @@ export default function HomeScreen() {
       image: require('../assets/images/tipCats/tip10.jpg') },
   ];
 
-  // Duplicate tips so after finishing the last, we seamlessly see the first
+  
   const tips = [...originalTips, ...originalTips]; 
-  // Now we have 20 tips in total
 
-  // Total width of the entire tips content
-  const totalContentWidth = tips.length * TIP_WIDTH; // 20 * TIP_WIDTH
+
+
+  const totalContentWidth = tips.length * TIP_WIDTH; 
 
   useEffect(() => {
     if (shouldReduceMotion) {
-      // If reduced motion is preferred, set scrollX to a static value
+      
       scrollX.setValue(0);
       return;
     }
 
-    scrollX.setValue(160); // Set initial offset
+    scrollX.setValue(160); 
     const segmentWidth = TIP_WIDTH;
     const duration = 800;
     const pauseDuration = 7000;
     const totalWidth = -(originalTips.length * TIP_WIDTH);
-    const resetDuration = 4000; // Duration for slow return to the start
+    const resetDuration = 4000; 
 
     let currentTip = 0;
 
@@ -97,15 +95,15 @@ export default function HomeScreen() {
           }
         });
       } else {
-        // Slowly return to the beginning
+       
         Animated.timing(scrollX, {
-          toValue: 160, // Return to the initial offset
+          toValue: 160, 
           duration: resetDuration,
-          easing: Easing.ease, // Slow easing for a smooth return
+          easing: Easing.ease, 
           useNativeDriver: true,
         }).start(({ finished }) => {
           if (finished) {
-            currentTip = 0; // Reset tip index
+            currentTip = 0; 
             setTimeout(animateSegment, pauseDuration);
           }
         });
@@ -117,9 +115,7 @@ export default function HomeScreen() {
     return () => scrollX.stopAnimation();
   }, [scrollX, shouldReduceMotion]);
 
-  /***************************************************************
-   * 2) CIRCLE ROTATION
-   ***************************************************************/
+ 
   const revolveAnim = useRef(new Animated.Value(0)).current;
 
   const revolve = revolveAnim.interpolate({
@@ -133,7 +129,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (shouldReduceMotion) {
-      // If reduced motion is preferred, do not start rotation
+      
       revolveAnim.setValue(0);
       return;
     }
@@ -153,9 +149,7 @@ export default function HomeScreen() {
     };
   }, [revolveAnim, shouldReduceMotion]);
 
-  /***************************************************************
-   * 3) RENDER
-   ***************************************************************/
+  
   return (
     <View style={styles.container}>
       {/* Row for Logo */}
@@ -174,7 +168,7 @@ export default function HomeScreen() {
             style={[
               styles.rotatingParent,
               shouldReduceMotion
-                ? {} // No rotation if reduced motion is preferred
+                ? {} 
                 : { transform: [{ rotate: revolve }] },
             ]}
           >
@@ -251,7 +245,7 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Row for Marquee */}
+      
       <View style={styles.marqueeWrapper}>
         <Animated.View
           style={[
@@ -259,7 +253,7 @@ export default function HomeScreen() {
             {
               width: totalContentWidth,
               transform: shouldReduceMotion
-                ? [{ translateX: 0 }] // No translation if reduced motion is preferred
+                ? [{ translateX: 0 }] 
                 : [{ translateX: scrollX }],
             },
           ]}
@@ -286,20 +280,18 @@ export default function HomeScreen() {
   );
 }
 
-/***************************************************************
- * STYLES
- ***************************************************************/
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    justifyContent: 'space-between', // Ensure proper spacing between rows
+    justifyContent: 'space-between', 
   },
 
-  // Circle Menu Row
+
   circleMenuWrapper: {
     marginTop: CONTENT_HEIGHT * -0.01,
-    flex: 3, // Adjust the proportion for the circle menu
+    flex: 3, 
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -332,14 +324,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Marquee Row
+ 
   marqueeWrapper: {
-    flex: 2.5, // Adjust the proportion for the marquee
+    flex: 2.5, 
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: CONTENT_HEIGHT * -0.1,
     marginBottom: CONTENT_HEIGHT * -0.02,
-    height: CONTENT_HEIGHT * 0.3, // Use relative height
+    height: CONTENT_HEIGHT * 0.3, 
     overflow: 'hidden',
   },
   marqueeContent: {
@@ -366,9 +358,9 @@ const styles = StyleSheet.create({
     marginTop: CONTENT_HEIGHT * 0.01,
   },
 
-  // Logo Row
+
   logoWrapper: {
-    flex: 1, // Adjust the proportion for the logo
+    flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -5,7 +5,7 @@ import IconThemedButton from '../../../components/buttons/IconThemedButton';
 import { HEADER_HEIGHT, CONTENT_WIDTH, LAYOUT_MARGIN_VERTICAL, LAYOUT_MARGIN_HORIZONTAL } from '../../../assets/utils/dimensions';
 
 type HeaderItem = {
-  type: 'button' | 'image' | 'text' | 'icon' | 'iconButton'; // Added 'iconButton'
+  type: 'button' | 'image' | 'text' | 'icon' | 'iconButton'; 
   props: any;
 };
 
@@ -20,7 +20,7 @@ export default function Header({ items = [], layoutType = 'equal', onLayout }: H
   const availableWidth = CONTENT_WIDTH;
   const itemCount = items.length || 1;
 
-  // Fractional gap to scale with device width
+ 
   const gapFraction = 0.15; 
   const desiredGap = availableWidth * gapFraction;
   const totalGapSpace = (itemCount - 1) * desiredGap;
@@ -77,7 +77,7 @@ export default function Header({ items = [], layoutType = 'equal', onLayout }: H
           )}
           {item.type === 'iconButton' && (
             <IconThemedButton
-              {...item.props} // Pass props for IconThemedButton
+              {...item.props} 
               height={HEADER_HEIGHT * 0.3}
               width={itemWidths[index]/1.1}
             />
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F0F8FF',
     height: HEADER_HEIGHT,
-    // borderBottomWidth: 1,
+   
     borderBottomColor: '#E0E0E0',
     paddingTop: LAYOUT_MARGIN_VERTICAL*3,
     paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL,

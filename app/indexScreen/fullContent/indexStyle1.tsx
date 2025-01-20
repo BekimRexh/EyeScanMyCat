@@ -28,7 +28,7 @@ const VerticalStack: React.FC<{
         {rows.map((rowItems, rowIndex) => {
           let rowHeight = BASE_HEIGHT;
 
-          // Calculate row height based on rowLayoutType
+        
           if (rowLayoutType === 'topHeavy' && rowIndex === 0) {
             rowHeight = ((rowCount + 0.6) / rowCount) * BASE_HEIGHT; 
           } else if (rowLayoutType === 'topHeavy' && rowIndex !== 0) {
@@ -53,7 +53,7 @@ const VerticalStack: React.FC<{
                   const columnCount = rowItems.length;
                   let columnWidth = CONTENT_WIDTH / columnCount; 
 
-                  // Calculate column width based on columnLayoutType
+                  
                   if (columnLayoutType === 'leftWide' && colIndex === 0) {
                     columnWidth = ((columnCount + 0.6) / columnCount) * (CONTENT_WIDTH / columnCount); 
                   } else if (columnLayoutType === 'leftWide' && colIndex !== 0) {
@@ -87,11 +87,7 @@ const VerticalStack: React.FC<{
           } catch (error) {
             console.error('Error navigating to Home:', error);
           }} },
-          // { line1: 'Quick', line2: 'Scan', onPress: () => {try {
-          //   router.push('/ScanScreenNew');
-          // } catch (error) {
-          //   console.error('Error navigating to ScanScreen:', error);
-          // }} },
+         
         ]}
         layoutType="equal" 
       />

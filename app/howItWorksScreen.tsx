@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import VerticalStack from './howItWorksScreen/fullContent/howStyle1'; // Import VerticalStack
+import VerticalStack from './howItWorksScreen/fullContent/howStyle1'; 
 import SwipableStack from '../components/SwipableStack';
 
 const HowScreen: React.FC = () => {
@@ -8,7 +8,7 @@ const HowScreen: React.FC = () => {
     <View style={localStyles.container}>
       <View style={localStyles.contentContainer}>
         <VerticalStack
-          rowHeights={[1]} // Adjusted row heights
+          rowHeights={[1]} 
           rows={[
             {
               columnLayoutType: 'equal',

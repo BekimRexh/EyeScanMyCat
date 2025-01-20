@@ -35,19 +35,17 @@ import { useScanState } from '../../ScanStateContext';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-// ---------------------------------------------------------------------
-// 1) Add these props so you can control "please wait" logic from above:
-// ---------------------------------------------------------------------
+
 interface VerticalStackProps {
   rows?: any[];
   rowLayoutType?: 'equal' | 'topHeavy' | 'bottomHeavy' | 'middleHeavy';
   rowHeights?: number[];
   columnGap?: number;
 
-  // NEW PROPS
-  isScanningInProgress?: boolean;   // Are we in the middle of scanning?
-  desiredRoute?: string | null;     // Where do we want to navigate after scanning ends?
-  setDesiredRoute?: (route: string) => void; // Function to set the route
+
+  isScanningInProgress?: boolean;   
+  desiredRoute?: string | null;     
+  setDesiredRoute?: (route: string) => void; 
 }
 
 const VerticalStack: React.FC<VerticalStackProps> = ({
@@ -56,7 +54,7 @@ const VerticalStack: React.FC<VerticalStackProps> = ({
   rowHeights = [],
   columnGap = 0.09,
 
-  // NEW PROPS
+ 
   isScanningInProgress = false,
   desiredRoute = null,
   setDesiredRoute = () => {},
@@ -64,7 +62,7 @@ const VerticalStack: React.FC<VerticalStackProps> = ({
   const router = useRouter();
   const { setScanState } = useScanState();
 
-  // Keep the same row/column layout logic
+ 
   const availableHeight = CONTENT_HEIGHT * 1.02;
   const availableWidth = CONTENT_WIDTH;
   const rowCount = rows.length || 1;
@@ -73,9 +71,7 @@ const VerticalStack: React.FC<VerticalStackProps> = ({
   const desiredRowGap = availableHeight * rowGapFraction;
   const totalRowGapSpace = (rowCount - 1) * desiredRowGap;
 
-  // ---------------------------------------------------------------------
-  // 2) Local state to show a "Please Wait" overlay if user taps mid-scan
-  // ---------------------------------------------------------------------
+  
   const [showPleaseWait, setShowPleaseWait] = useState(false);
 
   let calculatedRowHeights: number[];
@@ -116,21 +112,17 @@ const VerticalStack: React.FC<VerticalStackProps> = ({
       .map((height, index) => (index === middleIndex ? middleRowHeight : height));
   }
 
-  // ---------------------------------------------------------------------
-  // Footer button logic:
-  // If scanning is in progress, we show "please wait" & set desiredRoute.
-  // Otherwise, just navigate immediately.
-  // ---------------------------------------------------------------------
+ 
   const handlePress = (destination: string) => {
-    // 1) Turn off scanning, if you want
+    
     setScanState({ someKey: false });
 
-    // 2) If we are scanning, show the overlay and store the user’s desired route
+    
     if (isScanningInProgress) {
       setShowPleaseWait(true);
       setDesiredRoute?.(destination);
     } else {
-      // 3) If not scanning, just navigate right away
+      
       router.push(destination);
     }
   };
@@ -256,9 +248,7 @@ const VerticalStack: React.FC<VerticalStackProps> = ({
         layoutType="leftWide"
       />
 
-      {/* ---------------------------------------------------------------------
-          "Please Wait" overlay if scanning not yet finished
-         --------------------------------------------------------------------- */}
+     
       {showPleaseWait && (
         <View style={styles.overlayContainer}>
           <View style={styles.overlayBackground} />
@@ -342,7 +332,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
         {
           height: rowHeight,
           padding: rowHeight * 0.1,
-          width: columnWidth * 1.2, // Ensure it takes up most of the column width
+          width: columnWidth * 1.2, 
         },
       ]}
     >
@@ -352,7 +342,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           {
             fontSize: rowHeight * 0.25,
             fontFamily: 'Quicksand-Bold',
-            marginBottom: rowHeight * 0.05, // Add spacing after the header
+            marginBottom: rowHeight * 0.05, 
           },
         ]}
       >
@@ -363,7 +353,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           styles.requirementText,
           {
             fontSize: rowHeight * 0.2,
-            marginBottom: rowHeight * 0.08, // Add spacing between lines
+            marginBottom: rowHeight * 0.08, 
           },
         ]}
       >
@@ -374,7 +364,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           styles.requirementText,
           {
             fontSize: rowHeight * 0.2,
-            marginBottom: rowHeight * 0.08, // Add spacing between lines
+            marginBottom: rowHeight * 0.08, 
 
           },
         ]}
@@ -386,7 +376,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           styles.requirementText,
           {
             fontSize: rowHeight * 0.2,
-            marginBottom: rowHeight * 0.08, // Add spacing between lines
+            marginBottom: rowHeight * 0.08, 
           },
         ]}
       >
@@ -406,219 +396,6 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
   );
 
 
-  // case 'showImage': {
-  //   const adjustedHeight = CONTENT_HEIGHT/1.15; // Calculate new percentage
-
-  //   const cameraContainerStyle = props.cameraContainer
-  // ? {
-  //     width: '100%',
-  //     height: adjustedHeight,
-  //     marginTop: -LAYOUT_MARGIN_VERTICAL * -7,
-  //     borderRadius: 40,
-  //     overflow: 'hidden',
-  //     borderWidth: 0,
-  //     borderColor: '#9FC6D6',
-  //     backgroundColor: '#000000',
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //   }
-  // : {
-  //     width: '100%',
-  //     height: '107%',
-  //     marginTop: -LAYOUT_MARGIN_VERTICAL * 9,
-  //     borderRadius: 40,
-  //     overflow: 'hidden',
-  //     borderWidth: 0,
-  //     borderColor: '#9FC6D6',
-  //     backgroundColor: '#000000',
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //   };
-
-  //   const [cameraContainerDimensions, setCameraContainerDimensions] = useState({
-  //     width: 0,
-  //     height: 0,
-  //     x: 0,
-  //     y: 0,
-  //   });
-  
-  //   const [imageDimensions, setImageDimensions] = useState({
-  //     width: 0,
-  //     height: 0,
-  //   });
-  
-  //   const horizontalScanPosition = useSharedValue(0);
-  //   const verticalScanPosition = useSharedValue(0);
-  
-  //   const horizontalAnimatedStyle = useAnimatedStyle(() => ({
-  //     transform: [{ translateX: horizontalScanPosition.value }],
-  //   }));
-  
-  //   const verticalAnimatedStyle = useAnimatedStyle(() => ({
-  //     transform: [{ translateY: verticalScanPosition.value }],
-  //   }));
-  
-  //   const animatedX = useSharedValue(0);
-  //   const animatedY = useSharedValue(0);
-  //   const animatedWidth = useSharedValue(cameraContainerDimensions.width);
-  //   const animatedHeight = useSharedValue(cameraContainerDimensions.height);
-
-    
-  
-  //   const animatedStyle = useAnimatedStyle(() => ({
-  //     left: animatedX.value,
-  //     top: animatedY.value,
-  //     width: animatedWidth.value,
-  //     height: animatedHeight.value,
-  //   }));
-  
-  //   useEffect(() => {
-  //     if (props.imageUrl) {
-  //       Image.getSize(props.imageUrl, (width, height) => {
-  //         setImageDimensions({ width, height });
-  //       });
-  //     }
-  //   }, [props.imageUrl]);
-  
-  //   useEffect(() => {
-  //     if (props.showHorizontalAnimation) {
-  //       horizontalScanPosition.value = withRepeat(
-  //         withTiming(cameraContainerDimensions.width - 15, { duration: 4000 }),
-  //         -1,
-  //         true
-  //       );
-  //     } else {
-  //       horizontalScanPosition.value = 0;
-  //     }
-  
-  //     if (props.showVerticalAnimation) {
-  //       verticalScanPosition.value = withRepeat(
-  //         withTiming(cameraContainerDimensions.height - 15, { duration: 4000 }),
-  //         -1,
-  //         true
-  //       );
-  //     } else {
-  //       verticalScanPosition.value = 0;
-  //     }
-  //   }, [
-  //     props.showHorizontalAnimation,
-  //     props.showVerticalAnimation,
-  //     cameraContainerDimensions,
-  //   ]);
-  
-  //   useEffect(() => {
-  //     if (props.showBoundingBoxAnimation && props.boundingBox) {
-  //       const aspectRatioImage = imageDimensions.width / imageDimensions.height;
-  //       const aspectRatioContainer =
-  //         cameraContainerDimensions.width / cameraContainerDimensions.height;
-  
-  //       let scaleFactorX = 1;
-  //       let scaleFactorY = 1;
-  //       let offsetX = 0;
-  //       let offsetY = 0;
-  
-  //       if (aspectRatioImage > aspectRatioContainer) {
-  //         // Image is wider than the container
-  //         scaleFactorX = cameraContainerDimensions.height / imageDimensions.height;
-  //         scaleFactorY = scaleFactorX;
-  //         offsetX =
-  //           (cameraContainerDimensions.width -
-  //             imageDimensions.width * scaleFactorX) /
-  //           2;
-  //       } else {
-  //         // Image is taller than the container
-  //         scaleFactorY = cameraContainerDimensions.width / imageDimensions.width;
-  //         scaleFactorX = scaleFactorY;
-  //         offsetY =
-  //           (cameraContainerDimensions.height -
-  //             imageDimensions.height * scaleFactorY) /
-  //           2;
-  //       }
-  
-  //       const targetBox = {
-  //         x: offsetX + props.boundingBox.x * scaleFactorX,
-  //         y: offsetY + props.boundingBox.y * scaleFactorY,
-  //         width: props.boundingBox.width * scaleFactorX,
-  //         height: props.boundingBox.height * scaleFactorY,
-
-  //         // Clamp to ensure bounding box is within the container
-          
-  //       };
-  
-  //       // Animate the bounding box
-  //       animatedX.value = withTiming(targetBox.x, { duration: 2000 });
-  //       animatedY.value = withTiming(targetBox.y, { duration: 2000 });
-  //       animatedWidth.value = withTiming(targetBox.width, { duration: 2000 });
-  //       animatedHeight.value = withTiming(targetBox.height, { duration: 2000 });
-        
-  //       console.log('Image Dimensions (Original):', imageDimensions);
-  //       console.log('Container Dimensions:', cameraContainerDimensions);
-  //       console.log('Aspect Ratios - Image:', aspectRatioImage, 'Container:', aspectRatioContainer);
-  //       console.log('Scaling Factors:', { scaleFactorX, scaleFactorY });
-  //       console.log('Offsets:', { offsetX, offsetY });
-  //       console.log('Bounding Box (Original):', props.boundingBox);
-  //       console.log('Bounding Box (Mapped to Screen):', targetBox);
-
-  //     }
-  //   }, [
-  //     props.showBoundingBoxAnimation,
-  //     props.boundingBox,
-  //     imageDimensions,
-  //     cameraContainerDimensions,
-  //   ]);
-  
-  //   return (
-  //     <View
-  //       style={[styles.cameraContainer, cameraContainerStyle as ViewStyle]}
-  //       onLayout={(event) => {
-  //         const { width, height, x, y } = event.nativeEvent.layout;
-  //         setCameraContainerDimensions({ width, height, x, y });
-  //       }}
-  //     >
-  //       {props.croppedUri ? (
-  //       <>
-  //         {/* Enlarged blurred background */}
-  //         <Image
-  //           source={{ uri: props.croppedUri }}
-  //           style={styles.enlargedBlurredBackground}
-  //           blurRadius={4}
-  //         />
-  //         {/* Cropped image with resizeMode: contain */}
-  //         <Image source={{ uri: props.croppedUri }} style={styles.croppedCamera} />
-  //       </>
-  //     ) : props.imageUrl ? (
-  //         <>
-  //           <Image source={{ uri: props.imageUrl }} style={styles.camera} />
-  //           {props.showHorizontalAnimation && (
-  //             <Animated.View
-  //               style={[styles.horizontalScanBar, horizontalAnimatedStyle]}
-  //             />
-  //           )}
-  //           {props.showVerticalAnimation && (
-  //             <Animated.View
-  //               style={[styles.verticalScanBar, verticalAnimatedStyle]}
-  //             />
-  //           )}
-  //           {props.showBoundingBoxAnimation && (
-  //             <Animated.View
-  //               style={[
-  //                 animatedStyle,
-  //                 {
-  //                   position: 'absolute',
-  //                   borderColor: '#F4F3F3',
-  //                   borderWidth: 2,
-  //                   borderRadius: 10, // Add rounded corners
-  //                 },
-  //               ]}
-  //             />
-  //           )}
-  //         </>
-  //       ) : (
-  //         <Text style={{ color: '#F4F3F3', textAlign: 'center' }}>No image provided</Text>
-  //       )}
-  //     </View>
-  //   );
-  // }
   
   case 'showImage': {
     const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
@@ -798,7 +575,7 @@ const styles = StyleSheet.create({
   camera: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'transparent',
-    // resizeMode:"contain"
+    
   },
   croppedCamera:{
     ...StyleSheet.absoluteFillObject,
@@ -808,7 +585,7 @@ const styles = StyleSheet.create({
   enlargedBlurredBackground: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: 'cover',
-    zIndex: -1, // Ensures it stays behind the cropped image
+    zIndex: -1, 
   },
   focusSquare: {
     position: 'absolute',
@@ -818,10 +595,10 @@ const styles = StyleSheet.create({
     borderColor: 'white',
   },
   svgContainer: {
-    flex: 1, // Allow the SVG to scale dynamically
+    flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1, // Ensure it renders above the camera feed
+    zIndex: 1, 
   },
   svgOverlay: {
     position: 'absolute',
@@ -831,12 +608,12 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    pointerEvents: 'none', // Prevent the SVG from blocking touch events
+    pointerEvents: 'none', 
   },
   requirementsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL, // Dynamically adjust padding
+    paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL, 
     marginBottom: LAYOUT_MARGIN_VERTICAL*-0.2
   },
   requirementText: {
@@ -849,11 +626,11 @@ const styles = StyleSheet.create({
   },
   horizontalScanBar: {
     position: 'absolute',
-    top:0, // Starts at the top of the container
+    top:0, 
     left:0,
     right:15,
-    height: '100%', // Full height of the container
-    backgroundColor: '#F4F3F3', // Customize the color
+    height: '100%', 
+    backgroundColor: '#F4F3F3',
     width: 5,
     zIndex: 2,
   },
@@ -861,9 +638,9 @@ const styles = StyleSheet.create({
   verticalScanBar: {
     position: 'absolute',
     top:0,
-    left: 0, // Starts at the left of the container
-    width: '100%', // Full width of the container
-    backgroundColor: '#F4F3F3', // Customize the color
+    left: 0, 
+    width: '100%', 
+    backgroundColor: '#F4F3F3', 
     height: 5,
     zIndex: 2,
   },

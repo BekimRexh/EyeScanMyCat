@@ -42,34 +42,22 @@ export default function BeginScanButton({
   widthMultiplier = 0.85,
   iconSizeMultiplier = 0.5,
 }: BeginScanButtonProps) {
-  /**
-   * --------------------------------------------------------
-   * 1) Dimensions
-   * --------------------------------------------------------
-   */
+  
   const buttonHeight = HEADER_HEIGHT * heightMultiplier;
   const buttonWidth = CONTENT_WIDTH * widthMultiplier;
   const halfWidth = buttonWidth / 2.5;
 
-  /**
-   * --------------------------------------------------------
-   * 2) Shared Values
-   * --------------------------------------------------------
-   */
+  
   const widthAnim = useSharedValue(buttonWidth);
   const fadeIdleIcons = useSharedValue(1);
   const fadeExpandedText = useSharedValue(0);
   const spinAnim = useSharedValue(0);
 
-  const isDisabled = scanStatus !== 'idle'; // Disable if not in idle state
+  const isDisabled = scanStatus !== 'idle'; 
 
-  const shouldReduceMotion = useReducedMotion(); // Detect if reduced motion is preferred
+  const shouldReduceMotion = useReducedMotion(); 
 
-  /**
-   * --------------------------------------------------------
-   * 3) Animated Styles
-   * --------------------------------------------------------
-   */
+  
   const animatedButtonStyle = useAnimatedStyle(() => ({
     width: widthAnim.value,
     height: buttonHeight,
@@ -97,11 +85,7 @@ export default function BeginScanButton({
     opacity: fadeExpandedText.value,
   }));
 
-  /**
-   * --------------------------------------------------------
-   * 4) Handle Width and Fade Animations
-   * --------------------------------------------------------
-   */
+  
   useEffect(() => {
     if (shouldReduceMotion) {
       if (scanStatus === 'idle') {
@@ -157,11 +141,7 @@ export default function BeginScanButton({
     shouldReduceMotion,
   ]);
 
-  /**
-   * --------------------------------------------------------
-   * 5) Spinner Animation
-   * --------------------------------------------------------
-   */
+  
   useEffect(() => {
     if (loading && !shouldReduceMotion) {
       spinAnim.value = withRepeat(
@@ -178,14 +158,10 @@ export default function BeginScanButton({
     }
   }, [loading, spinAnim, shouldReduceMotion]);
 
-  /**
-   * --------------------------------------------------------
-   * 6) Handle Press
-   * --------------------------------------------------------
-   */
+  
   const handlePress = () => {
     if (!isDisabled && !shouldReduceMotion) {
-      // Sequence animations: fade out icons and shrink button
+      
       fadeIdleIcons.value = withTiming(0, {
         duration: 300,
         easing: Easing.out(Easing.quad),
@@ -195,7 +171,7 @@ export default function BeginScanButton({
           easing: Easing.inOut(Easing.quad),
         }, () => {
           runOnJS(onPress)();
-          // Optionally reset animations or handle post-press state
+          
           fadeIdleIcons.value = withTiming(1, { duration: 300 });
         });
       });
@@ -204,11 +180,7 @@ export default function BeginScanButton({
     }
   };
 
-  /**
-   * --------------------------------------------------------
-   * 7) Render
-   * --------------------------------------------------------
-   */
+ 
   const iconSize = buttonHeight * iconSizeMultiplier;
   const isIdle = scanStatus === 'idle';
   const isCircleMode = scanStatus === 'loadingCircle';
@@ -224,7 +196,7 @@ export default function BeginScanButton({
           disabled={isDisabled}
           activeOpacity={0.7}
         >
-          {/** IDLE Icons */}
+          
           {isIdle && (
             <Animated.View style={idleIconsStyle}>
               <View style={styles.textContainer}>
@@ -253,7 +225,7 @@ export default function BeginScanButton({
             </Animated.View>
           )}
 
-          {/** SPINNER => ALWAYS MOUNTED => Hide/Show or Position */}
+          
           {loading && (
             <Animated.View
               style={[
@@ -269,7 +241,7 @@ export default function BeginScanButton({
             </Animated.View>
           )}
 
-          {/** If expanded => text + spinner in a row */}
+          
           {isExpandedMode && (
             <Animated.View style={[styles.expandedRow, expandedTextStyle]}>
               <Text style={styles.expandedText}>
@@ -288,7 +260,7 @@ export default function BeginScanButton({
             </Animated.View>
           )}
 
-          {/* ERROR Mode */}
+          
           {isErrorMode && (
             <Animated.View style={[styles.expandedRow, expandedTextStyle]}>
               <Text style={styles.expandedText}>
@@ -302,7 +274,7 @@ export default function BeginScanButton({
   );
 }
 
-/** Animated scan line for the idle icons */
+
 function AnimatedScanLine({ iconSize }: { iconSize: number }) {
   const lineAnim = useSharedValue(-iconSize * 0.3);
   const shouldReduceMotion = useReducedMotion();
@@ -323,8 +295,8 @@ function AnimatedScanLine({ iconSize }: { iconSize: number }) {
         duration: 2100,
         easing: Easing.inOut(Easing.quad),
       }),
-      -1, // Infinite
-      true // Reverse
+      -1, 
+      true 
     );
   }, [iconSize, lineAnim, shouldReduceMotion]);
 
@@ -344,7 +316,7 @@ function AnimatedScanLine({ iconSize }: { iconSize: number }) {
 
 const styles = StyleSheet.create({
   container: {
-    // center for demo
+    
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -369,7 +341,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textContainer: {
-    // Original "Start" / "Scan" icons 
+     
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -378,7 +350,7 @@ const styles = StyleSheet.create({
   sideText: {
     fontSize: CONTENT_WIDTH * 0.08,
     color: '#2F4F4F',
-    // fontWeight: 'bold',
+    
     fontFamily: 'Quicksand-Regular',
     textAlign: 'center',
     paddingHorizontal: CONTENT_WIDTH * 0.03,
@@ -401,20 +373,20 @@ const styles = StyleSheet.create({
     right: 0,
   },
 
-  /** SPINNER STYLES */
+  
   circleSpinner: {
-    // center spinner in the circle
+    
     position: 'absolute',
   },
   hiddenSpinner: {
-    // hide (or set width/height=0) if we want only the second spinner
-    // in expanded mode
+    
+    
     width: 0,
     height: 0,
     overflow: 'hidden',
   },
 
-  /** EXPANDED MODE ROW */
+  
   expandedRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -424,7 +396,7 @@ const styles = StyleSheet.create({
     fontSize: CONTENT_WIDTH * 0.06,
     marginRight: CONTENT_WIDTH * 0.05,
     color: '#2F4F4F',
-    // fontWeight: 'bold',
+    
     fontFamily: 'Quicksand-Regular',
   },
 });

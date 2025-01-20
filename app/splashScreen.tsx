@@ -8,14 +8,14 @@ interface SplashScreenProps {
 }
 
 const SplashScreenComponent: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
-  const fadeAnim = useRef(new Animated.Value(1)).current; // Animation for fading out
+  const fadeAnim = useRef(new Animated.Value(1)).current; 
   const videoRef = useRef<Video>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       try {
-        await SplashScreen.preventAutoHideAsync(); // Prevent auto-hide
+        await SplashScreen.preventAutoHideAsync(); 
         const isReduceMotionEnabled = await AccessibilityInfo.isReduceMotionEnabled();
         setReduceMotion(isReduceMotionEnabled);
       } catch (error) {
@@ -29,24 +29,24 @@ const SplashScreenComponent: React.FC<SplashScreenProps> = ({ onAnimationComplet
   const onPlaybackStatusUpdate = async (status: any) => {
     if (status.didJustFinish) {
       try {
-        // Pause the video at the last frame
+        
         if (videoRef.current) {
           await videoRef.current.setPositionAsync(status.durationMillis);
           await videoRef.current.pauseAsync();
         }
 
-        // Start fade-out animation for the video
+        
         if (!reduceMotion) {
           Animated.timing(fadeAnim, {
-            toValue: 0, // Fully transparent
-            duration: 2500, // Duration of fade-out effect
+            toValue: 0, 
+            duration: 2500, 
             useNativeDriver: true,
           }).start(() => {
             SplashScreen.hideAsync();
             onAnimationComplete();
           });
         } else {
-          // Skip animation and hide splash screen immediately
+          
           SplashScreen.hideAsync();
           onAnimationComplete();
         }
@@ -67,9 +67,9 @@ const SplashScreenComponent: React.FC<SplashScreenProps> = ({ onAnimationComplet
   return (
     <View style={styles.container}>
       {reduceMotion ? (
-        // Static splash screen for users with "Reduce Motion" enabled
+        
         <View style={styles.staticSplash}>
-          {/* Replace with your static splash image or logo */}
+          
           <View style={styles.staticLogo} />
         </View>
       ) : (
@@ -78,7 +78,7 @@ const SplashScreenComponent: React.FC<SplashScreenProps> = ({ onAnimationComplet
             ref={videoRef}
             source={require('../assets/animations/meowmediclogo2.mp4')}
             resizeMode="contain"
-            rate={1.5} // Playback speed
+            rate={1.5} 
             shouldPlay
             onPlaybackStatusUpdate={onPlaybackStatusUpdate}
             onError={handleVideoError}
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff', // Ensure white background
+    backgroundColor: '#ffffff', 
   },
   videoWrapper: {
     width: '100%',
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff', // Match your splash screen background
+    backgroundColor: '#ffffff', 
   },
   staticLogo: {
-    width: 150, // Adjust as needed
+    width: 150, 
     height: 150,
-    backgroundColor: '#cccccc', // Placeholder for your static logo
+    backgroundColor: '#cccccc', 
     borderRadius: 75,
   },
 });

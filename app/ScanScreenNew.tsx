@@ -4,7 +4,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View, Alert, ActivityIndica
 import { useRouter } from 'expo-router';
 import Header from './indexScreen/header/header';
 import Footer from './indexScreen/footer/Footer';
-import VerticalStack from './scanScreen/fullContent/scanStyle1'; // Import VerticalStack
+import VerticalStack from './scanScreen/fullContent/scanStyle1'; 
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
@@ -35,7 +35,7 @@ const ScanScreen: React.FC = () => {
     }
   }, [permission]);
 
-   // Ask for permission when the component mounts
+ 
    useEffect(() => {
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -75,10 +75,10 @@ const ScanScreen: React.FC = () => {
 
   const handleLibraryImage = async (imageUri: string) => {
     try {
-      // Navigate to PhotoApprovalScreen with the selected image
+     
       router.push({
         pathname: '/PhotoApprovalScreen',
-        params: { imageUri }, // Pass image URI to the next screen
+        params: { imageUri }, 
       });
     } catch (error) {
       console.error('Error navigating to PhotoApprovalScreen with image:', error);
@@ -96,7 +96,7 @@ const ScanScreen: React.FC = () => {
         }
         router.push({
           pathname: '/PhotoApprovalScreen',
-          params: { imageUri: photo.uri }, // Pass image URI to the next screen
+          params: { imageUri: photo.uri }, 
         });
       } catch (error) {
         console.error('Error capturing photo:', error);
@@ -144,7 +144,7 @@ const ScanScreen: React.FC = () => {
 
       if (!result.canceled) {
         const imageUri = result.assets[0].uri;
-        handleLibraryImage(imageUri); // Process the image and navigate
+        handleLibraryImage(imageUri); 
       }
     } catch (error) {
       console.error('Error accessing photo library:', error);
@@ -158,7 +158,7 @@ const ScanScreen: React.FC = () => {
         <VerticalStack 
           rowHeights={[10, 1, 1]}
           rows={[
-            // First row: Camera
+           
             { 
               columnLayoutType: 'equal', 
               items: [
@@ -175,7 +175,7 @@ const ScanScreen: React.FC = () => {
                 }
               ]
             },
-            // Second row: Custom buttons or other content
+            
             { 
               columnLayoutType: 'equal', 
               items: [
@@ -184,10 +184,9 @@ const ScanScreen: React.FC = () => {
                   props: {
                     name: 'rick',
                     IconComponent: MaterialIcons,
-                    // heightMultiplier: 0.9,
-                    // widthMultiplier:0.2,
+                  
                     iconName: 'insert-photo',
-                    // iconSize: 35,
+                   
                     onPress: () => handlePhotoLibraryAccess(),
                   },
                 },
@@ -196,11 +195,9 @@ const ScanScreen: React.FC = () => {
                   props: {
                     name: 'rick',
                     IconComponent: MaterialIcons,
-                    // iconSizeMultiplier:1.1,
-                    // heightMultiplier: 0.5,
-                    // widthMultiplier:0.3,
+                   
                     iconName: 'camera',
-                    // iconSize: 80,
+                   
                     onPress: () => handleCapture(),
                   },
                 },
@@ -209,10 +206,9 @@ const ScanScreen: React.FC = () => {
                   props: {
                     name: 'rick',
                     IconComponent: MaterialIcons,
-                    // heightMultiplier: 0.9,
-                    // widthMultiplier:0.7,
+                   
                     iconName: 'flip-camera-ios',
-                    // iconSize: 40,
+                  
                     onPress: () => setFacing((prevFacing) => (prevFacing === 'back' ? 'front' : 'back')),
 
                   },

@@ -18,7 +18,7 @@ export default function Header({ items = [], layoutType = 'equal', onLayout }: H
   const availableWidth = CONTENT_WIDTH;
   const itemCount = items.length || 1;
 
-  // Fractional gap to scale with device width
+
   const gapFraction = 0.06; 
   const desiredGap = availableWidth * gapFraction;
   const totalGapSpace = (itemCount - 1) * desiredGap;
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F0F8FF',
     height: HEADER_HEIGHT,
-    // borderBottomWidth: 1,
+    
     borderBottomColor: '#E0E0E0',
     paddingTop: LAYOUT_MARGIN_VERTICAL*4,
     paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL,

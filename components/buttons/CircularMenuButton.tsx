@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { styles } from '../styles'; // Adjust the import path as necessary
+import { styles } from '../styles'; 
 
 interface CircularMenuButtonProps {
   onPress: () => void;
@@ -9,7 +9,7 @@ interface CircularMenuButtonProps {
   iconColor?: string;
   buttonStyle?: object;
   iconStyle?: object;
-  IconComponent: React.ComponentType<any>; // Accepts any icon library component
+  IconComponent: React.ComponentType<any>; 
 }
 
 const CircularMenuButton: React.FC<CircularMenuButtonProps> = ({

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import VerticalStack from './aboutScreen/fullContent/aboutStyle1'; // Import VerticalStack
+import VerticalStack from './aboutScreen/fullContent/aboutStyle1'; 
 import { HEADER_HEIGHT, TOTAL_FOOTER_SPACE, CONTENT_HEIGHT, CONTENT_WIDTH, LAYOUT_MARGIN_HORIZONTAL, LAYOUT_MARGIN_VERTICAL } from '../assets/utils/dimensions';
 import { MaterialIcons } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -12,16 +12,16 @@ const AboutScreen: React.FC = () => {
   const { croppedUri, result } = useLocalSearchParams();
   console.log(result)
 
-  // Ensure 'result' is a string
+ 
 
   return (
     <View style={localStyles.container}>
       {/* Content Area */}
       <View style={localStyles.contentContainer}>
         <VerticalStack
-          rowHeights={[1]} // Adjusted row heights
+          rowHeights={[1]} 
           rows={[
-            // Second row: Display the results text
+           
             {
               columnLayoutType: 'equal',
               items: [

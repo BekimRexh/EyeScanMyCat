@@ -9,12 +9,12 @@ interface AppGeneralButtonProps {
   buttonStyle?: object;
   textStyle?: object;
   contentStyle?: object;
-  IconComponent?: React.ElementType; // Optional: The icon component (FontAwesome, MaterialCommunityIcons, etc.)
-  iconName?: string; // Optional: The name of the icon (e.g., "home", "cat")
-  iconSize?: number; // Optional: Size of the icon
-  iconColor?: string; // Optional: Color of the icon
+  IconComponent?: React.ElementType; 
+  iconName?: string;
+  iconSize?: number; 
+  iconColor?: string; 
   borderRadius?: number;
-  disabled?: boolean; // **Support for 'disabled' prop**
+  disabled?: boolean; 
 }
 
 const AppGeneralButton: React.FC<AppGeneralButtonProps> = ({
@@ -24,44 +24,44 @@ const AppGeneralButton: React.FC<AppGeneralButtonProps> = ({
   buttonStyle,
   textStyle,
   contentStyle,
-  IconComponent, // Optional icon component
-  iconName, // Icon name to render
-  iconSize = 24, // Default icon size
-  iconColor = '#2F4F4F', // Default icon color
+  IconComponent, 
+  iconName, 
+  iconSize = 24, 
+  iconColor = '#2F4F4F', 
   borderRadius,
-  disabled = false, // Default disabled to false
+  disabled = false, 
 }) => {
   return (
     <TouchableOpacity
       style={[
         styles.buttonTheme2, 
-        localStyles.shadow, // Added 3D shadow styles
+        localStyles.shadow, 
         buttonStyle, 
-        disabled && localStyles.disabledButton // Apply the disabled style
+        disabled && localStyles.disabledButton 
       ]}
-      onPress={!disabled ? onPress : undefined} // Prevent onPress if disabled
-      activeOpacity={disabled ? 1 : 0.7} // Disable touch feedback when disabled
-      disabled={disabled} // Disables TouchableOpacity's internal functionality
+      onPress={!disabled ? onPress : undefined}
+      activeOpacity={disabled ? 1 : 0.7} 
+      disabled={disabled} 
     >
       <View style={[localStyles.buttonContent, contentStyle]}>
-        {/* Conditionally render the icon if the IconComponent and iconName are provided */}
+       
         {IconComponent && iconName && (
           <IconComponent
             name={iconName}
             size={iconSize}
-            color={disabled ? '#A9A9A9' : iconColor} // Change icon color when disabled
+            color={disabled ? '#A9A9A9' : iconColor} 
             borderRadius={borderRadius}
           />
         )}
 
-        {/* Render children or text depending on what's provided */}
+        
         {children ? (
           <View style={localStyles.contentWrapper}>{children}</View>
         ) : (
           <Text style={[
             styles.buttonText2, 
             textStyle, 
-            disabled && localStyles.disabledText // Style for disabled text
+            disabled && localStyles.disabledText 
           ]}>
             {text}
           </Text>
@@ -84,16 +84,16 @@ const localStyles = StyleSheet.create({
     marginLeft: 5,
   },
   shadow: {
-    shadowColor: '#000', // Shadow color
-    shadowOffset: { width: 0, height: 6 }, // Shadow position
-    shadowOpacity: 0.2, // Opacity of the shadow
-    shadowRadius: 6, // How blurred the shadow is
-    elevation: 8, // Android shadow
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 6 }, 
+    shadowOpacity: 0.2, 
+    shadowRadius: 6, 
+    elevation: 8, 
   },
   disabledButton: {
-    opacity: 0.5, // Reduce opacity to visually indicate it's disabled
+    opacity: 0.5, 
   },
   disabledText: {
-    color: '#A9A9A9', // Dim the text color when disabled
+    color: '#A9A9A9', 
   },
 });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import VerticalStack from './termsScreen/fullContent/termsStyle1'; // Import VerticalStack
+import VerticalStack from './termsScreen/fullContent/termsStyle1'; 
 import { HEADER_HEIGHT, TOTAL_FOOTER_SPACE, CONTENT_HEIGHT, CONTENT_WIDTH, LAYOUT_MARGIN_HORIZONTAL, LAYOUT_MARGIN_VERTICAL } from '../assets/utils/dimensions';
 import { MaterialIcons } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -12,12 +12,12 @@ const TermsScreen: React.FC = () => {
   const { croppedUri, result } = useLocalSearchParams();
   console.log(result)
 
-  // Ensure 'result' is a string
+ 
 const resultValue = Array.isArray(result) ? result[0] : result;
 
 
 
-// Determine result category based on the inference probability
+
 const getResultCategory = (result: number): string => {
 if (result < 0.5) return 'Healthy';
 if (result < 0.65) return 'Low Chance';
@@ -32,9 +32,9 @@ return (
     {/* Content Area */}
     <View style={localStyles.contentContainer}>
       <VerticalStack
-        rowHeights={[1]} // Adjusted row heights
+        rowHeights={[1]} 
         rows={[
-          // Second row: Display the results text
+        
           {
             columnLayoutType: 'equal',
             items: [

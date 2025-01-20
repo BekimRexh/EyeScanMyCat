@@ -1,14 +1,14 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
 import { useButtonAnimation } from './animations';
-import { FontAwesome } from '@expo/vector-icons'; // For tick icon
+import { FontAwesome } from '@expo/vector-icons'; 
 
 const CustomButton = ({ title, onPress }) => {
   const { animatedValue, showTickAnimation, textOpacity, handlePressIn, handlePressOut } = useButtonAnimation();
 
-  // Apply animated width and scale
+  
   const animatedStyle = {
-    transform: [{ scale: animatedValue }], // Other animations
+    transform: [{ scale: animatedValue }], 
   };
 
   const tickStyle = {
@@ -17,20 +17,20 @@ const CustomButton = ({ title, onPress }) => {
       {
         scale: showTickAnimation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 1], // Start hidden, then scale to full size
+          outputRange: [0, 1], 
         }),
       },
     ],
   };
 
   const textStyle = {
-    opacity: textOpacity, // Control the opacity of the text
+    opacity: textOpacity, 
   };
 
   return (
     <TouchableOpacity
       onPressIn={handlePressIn}
-      onPressOut={() => handlePressOut(onPress)} // Pass the callback
+      onPressOut={() => handlePressOut(onPress)} 
       style={styles.buttonWrapper}
       activeOpacity={0.8}
     >
@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.44,
     shadowRadius: 5.0,
-    elevation: 24, // Android shadow
-    borderWidth: 2, // Specify a border width
-    borderColor: '#003972', // Specify the border color
+    elevation: 24, 
+    borderWidth: 2, 
+    borderColor: '#003972', 
   },
   buttonText: {
     fontSize: 22,

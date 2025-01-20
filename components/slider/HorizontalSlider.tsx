@@ -4,7 +4,7 @@ import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { CONTENT_HEIGHT, CONTENT_WIDTH, HEADER_HEIGHT } from '../../assets/utils/dimensions'; // Use your existing constants
 
 interface HorizontalSliderProps {
-  width?: number; // Optional: width can now default to `CONTENT_WIDTH * 0.8`
+  width?: number; 
   onChange: (value: number) => void;
 }
 
@@ -16,13 +16,13 @@ const HorizontalSlider: React.FC<HorizontalSliderProps> = ({ width = CONTENT_WID
     const { translationX } = event.nativeEvent;
     let newPosition = startX.current + translationX;
 
-    // Clamp position to within the track's width
+    
     newPosition = Math.max(0, Math.min(newPosition, width));
     setSliderPosition(newPosition);
 
-    // Exponential scaling for zoom value
+    
     let zoomValue = (newPosition / width) ** 0.5; 
-    zoomValue = Math.min(Math.max(0, 0.3 * zoomValue), 1); // Clamp zoom value between 0 and 1
+    zoomValue = Math.min(Math.max(0, 0.3 * zoomValue), 1); 
     onChange(zoomValue);
   };
 
@@ -33,14 +33,14 @@ const HorizontalSlider: React.FC<HorizontalSliderProps> = ({ width = CONTENT_WID
     }
   };
 
-  // Calculate Tick Mark Positions
+  
   const tickMarks = [0, 0.25, 0.5, 0.75, 1];
-  const edgePadding = width * 0.02; // Scaled padding
+  const edgePadding = width * 0.02; 
 
   return (
     <View style={[localStyles.sliderContainer, { width }]}>
       <View style={[localStyles.sliderTrack, { width }]}>
-        {/* Spacer to push ticks inward */}
+        
         <View style={[localStyles.trackPadding, { width: edgePadding }]} />
         
         <View style={localStyles.tickContainer}>
@@ -70,7 +70,7 @@ const HorizontalSlider: React.FC<HorizontalSliderProps> = ({ width = CONTENT_WID
             { left: sliderPosition - HEADER_HEIGHT * 0.1 + edgePadding }
           ]}
         >
-          {/* Ridges */}
+          
           <View style={localStyles.ridgesContainer}>
             {[...Array(3)].map((_, index) => (
               <View key={index} style={localStyles.ridge} />
@@ -84,7 +84,7 @@ const HorizontalSlider: React.FC<HorizontalSliderProps> = ({ width = CONTENT_WID
 
 const localStyles = StyleSheet.create({
   sliderContainer: {
-    height: HEADER_HEIGHT * 0.52, // Scaled container height
+    height: HEADER_HEIGHT * 0.52, 
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -93,7 +93,7 @@ const localStyles = StyleSheet.create({
     height: HEADER_HEIGHT * 0.05, 
     backgroundColor: '#555', 
     borderRadius: HEADER_HEIGHT * 0.05,
-    position: 'relative', // Relative positioning for ticks
+    position: 'relative', 
   },
   trackPadding: {
     height: '100%', 
@@ -103,7 +103,7 @@ const localStyles = StyleSheet.create({
     width: HEADER_HEIGHT * 0.27,
     height: HEADER_HEIGHT * 0.13,
     // backgroundColor: '#94c5d8',
-    backgroundColor: 'linear-gradient(to right, #d9e7fc,rgb(30, 90, 114))', // Simulate gradient
+    backgroundColor: 'linear-gradient(to right, #d9e7fc,rgb(30, 90, 114))', 
 
     borderRadius: HEADER_HEIGHT * 0.1,
     justifyContent: 'center',
@@ -116,7 +116,7 @@ const localStyles = StyleSheet.create({
     borderWidth: 0.4,
     borderColor: 'rgba(92, 167, 196, 0.5)',
     position: 'absolute',
-    top: HEADER_HEIGHT * 0.23, // Centered vertically relative to the track
+    top: HEADER_HEIGHT * 0.23, 
   },
   ridgesContainer: {
     position: 'absolute',

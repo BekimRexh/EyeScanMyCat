@@ -26,15 +26,15 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 const VerticalStack: React.FC<{ 
   rows?: any[], 
   rowLayoutType?: 'equal' | 'topHeavy' | 'bottomHeavy' | 'middleHeavy',
-  rowHeights?: number[], // New prop for custom row heights
+  rowHeights?: number[], 
   columnGap?: number, 
 }> = ({ rows = [], rowLayoutType = 'equal', rowHeights = [], columnGap = 0.09 }) => {
   
-  const availableHeight = CONTENT_HEIGHT*1.02; // Total available height for rows
-  const availableWidth = CONTENT_WIDTH;  // Total available width for columns
+  const availableHeight = CONTENT_HEIGHT*1.02;
+  const availableWidth = CONTENT_WIDTH;  
   const rowCount = rows.length || 1;
 
-  // Fractional gap for rows
+  
   const rowGapFraction = -0.02; 
   const desiredRowGap = availableHeight * rowGapFraction;
   const totalRowGapSpace = (rowCount - 1) * desiredRowGap;
@@ -42,27 +42,27 @@ const VerticalStack: React.FC<{
   let calculatedRowHeights: number[];
 
   if (rowHeights.length === rowCount) {
-    // Use provided rowHeights if they match the row count
+   
     const totalCustomHeight = rowHeights.reduce((sum, ratio) => sum + ratio, 0);
     calculatedRowHeights = rowHeights.map(ratio => (ratio / totalCustomHeight) * (availableHeight - totalRowGapSpace));
   } else if (rowLayoutType === 'equal') {
-    // Default to equal heights
+   
     const totalRowHeight = availableHeight - totalRowGapSpace;
     const rowHeight = totalRowHeight / rowCount;
     calculatedRowHeights = Array(rowCount).fill(rowHeight);
   } else if (rowLayoutType === 'topHeavy') {
     const adjustedHeight = availableHeight - totalRowGapSpace;
-    const topRowHeight = adjustedHeight * 0.7; // 80% for the top row
+    const topRowHeight = adjustedHeight * 0.7; 
     const otherRowHeight = (adjustedHeight - topRowHeight) / (rowCount - 1);
     calculatedRowHeights = [topRowHeight, ...Array(rowCount - 1).fill(otherRowHeight)];
   } else if (rowLayoutType === 'bottomHeavy') {
     const adjustedHeight = availableHeight - totalRowGapSpace;
-    const bottomRowHeight = adjustedHeight * 0.7; // 80% for the bottom row
+    const bottomRowHeight = adjustedHeight * 0.7; 
     const otherRowHeight = (adjustedHeight - bottomRowHeight) / (rowCount - 1);
     calculatedRowHeights = [...Array(rowCount - 1).fill(otherRowHeight), bottomRowHeight];
   } else if (rowLayoutType === 'middleHeavy') {
     const adjustedHeight = availableHeight - totalRowGapSpace;
-    const middleRowHeight = adjustedHeight * 0.7; // 80% for the middle row
+    const middleRowHeight = adjustedHeight * 0.7; 
     const otherRowHeight = (adjustedHeight - middleRowHeight) / (rowCount - 1);
     const middleIndex = Math.floor(rowCount / 2);
     calculatedRowHeights = Array(rowCount)
@@ -79,7 +79,7 @@ const VerticalStack: React.FC<{
             type: 'iconButton',
             props: {
               name: 'rick',
-              IconComponent: Entypo, // Replace with your icon library
+              IconComponent: Entypo, 
               iconName: 'text-document',
               heightMultiplier: 0.18,
               widthMultiplier:0.17,
@@ -93,7 +93,7 @@ const VerticalStack: React.FC<{
             type: 'iconButton',
             props: {
               name: 'rick',
-              IconComponent: AntDesign, // Replace with your icon library
+              IconComponent: AntDesign, 
               iconName: 'questioncircleo',
               heightMultiplier: 0.18,
               widthMultiplier:0.17,
@@ -115,19 +115,19 @@ const VerticalStack: React.FC<{
 
           const columnCount = items.length || 1;
 
-          // Column gap calculation
+          
           const desiredColumnGap = availableWidth * columnGap;
           const totalColumnGapSpace = (columnCount - 1) * desiredColumnGap;
 
-          // Adjusted width for columns
+          
           const adjustedColumnWidth = availableWidth - totalColumnGapSpace;
           const columnWidths = Array(columnCount).fill(adjustedColumnWidth / columnCount);
 
           if (columnLayoutType === 'leftWide') {
-            columnWidths[0] = adjustedColumnWidth * 0.6; // Wide column
+            columnWidths[0] = adjustedColumnWidth * 0.6; 
             columnWidths.fill(adjustedColumnWidth * 0.4 / (columnCount - 1), 1);
           } else if (columnLayoutType === 'rightWide') {
-            columnWidths[columnWidths.length - 1] = adjustedColumnWidth * 0.6; // Wide column
+            columnWidths[columnWidths.length - 1] = adjustedColumnWidth * 0.6; 
             columnWidths.fill(adjustedColumnWidth * 0.4 / (columnCount - 1), 0, columnWidths.length - 1);
           }
 
@@ -136,7 +136,7 @@ const VerticalStack: React.FC<{
               key={rowIndex} 
               style={[
                 styles.rowContainer, 
-                { height: rowHeight, marginBottom: rowIndex !== rowCount - 1 ? desiredRowGap : 0 } // Row gaps
+                { height: rowHeight, marginBottom: rowIndex !== rowCount - 1 ? desiredRowGap : 0 } 
               ]}
             >
               {items.map((item, colIndex) => (
@@ -144,7 +144,7 @@ const VerticalStack: React.FC<{
                   key={colIndex} 
                   style={{
                     width: columnWidths[colIndex],
-                    marginRight: colIndex !== columnCount - 1 ? desiredColumnGap : 0, // Column gaps
+                    marginRight: colIndex !== columnCount - 1 ? desiredColumnGap : 0, 
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -231,13 +231,13 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
       
         return (
           <View style={[styles.resultsTextContainer, style]}>
-            {/* Main result and description */}
+            
             <Text style={styles.resultsTextTitle}>
               Conjunctivitis Result: <Text style={styles.resultsTextResult}>{result}</Text>
             </Text>
             <Text style={styles.resultsTextDescription}>{description}</Text>
         
-            {/* Icon and extra text with overlapping icon */}
+            
             {icon || extraText ? (
               <View style={styles.iconTextContainer}>
                 {icon && (
@@ -307,7 +307,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
               {
                 height: rowHeight,
                 padding: rowHeight * 0.1,
-                width: columnWidth * 1.2, // Ensure it takes up most of the column width
+                width: columnWidth * 1.2, 
               },
             ]}
           >
@@ -317,7 +317,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 {
                   fontSize: rowHeight * 0.25,
                   fontFamily: 'Quicksand-Bold',
-                  marginBottom: rowHeight * 0.05, // Add spacing after the header
+                  marginBottom: rowHeight * 0.05, 
                 },
               ]}
             >
@@ -328,7 +328,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 styles.requirementText,
                 {
                   fontSize: rowHeight * 0.2,
-                  marginBottom: rowHeight * 0.08, // Add spacing between lines
+                  marginBottom: rowHeight * 0.08, 
                 },
               ]}
             >
@@ -339,7 +339,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 styles.requirementText,
                 {
                   fontSize: rowHeight * 0.2,
-                  marginBottom: rowHeight * 0.08, // Add spacing between lines
+                  marginBottom: rowHeight * 0.08, 
 
                 },
               ]}
@@ -351,7 +351,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                 styles.requirementText,
                 {
                   fontSize: rowHeight * 0.2,
-                  marginBottom: rowHeight * 0.08, // Add spacing between lines
+                  marginBottom: rowHeight * 0.08, 
                 },
               ]}
             >
@@ -478,7 +478,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
             let offsetY = 0;
       
             if (aspectRatioImage > aspectRatioContainer) {
-              // Image is wider than the container
+              
               scaleFactorX = cameraContainerDimensions.height / imageDimensions.height;
               scaleFactorY = scaleFactorX;
               offsetX =
@@ -486,7 +486,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                   imageDimensions.width * scaleFactorX) /
                 2;
             } else {
-              // Image is taller than the container
+              
               scaleFactorY = cameraContainerDimensions.width / imageDimensions.width;
               scaleFactorX = scaleFactorY;
               offsetY =
@@ -502,7 +502,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
               height: props.boundingBox.height * scaleFactorY,
             };
       
-            // Animate the bounding box
+           
             animatedX.value = withTiming(targetBox.x, { duration: 2000 });
             animatedY.value = withTiming(targetBox.y, { duration: 2000 });
             animatedWidth.value = withTiming(targetBox.width, { duration: 2000 });
@@ -525,13 +525,13 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           >
             {props.croppedUri ? (
             <>
-              {/* Enlarged blurred background */}
+              
               <Image
                 source={{ uri: props.croppedUri }}
                 style={styles.enlargedBlurredBackground}
                 blurRadius={4}
               />
-              {/* Cropped image with resizeMode: contain */}
+              
               <Image source={{ uri: props.croppedUri }} style={styles.croppedCamera} />
             </>
           ) : props.imageUrl ? (
@@ -555,7 +555,7 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
                         position: 'absolute',
                         borderColor: '#F4F3F3',
                         borderWidth: 2,
-                        borderRadius: 10, // Add rounded corners
+                        borderRadius: 10, 
                       },
                     ]}
                   />
@@ -573,17 +573,17 @@ const renderVerticalItem = (item: any, rowHeight: number, columnWidth: number) =
           <View style={styles.cameraContainer}>
             {props.imageUrl ? (
               <>
-                {/* Enlarged blurred background */}
+               
                 <Image
                   source={{ uri: props.imageUrl }}
                   style={styles.enlargedBlurredBackground}
-                  blurRadius={10} // Higher blur radius for better effect
+                  blurRadius={10} 
                 />
-                {/* Static image overlay */}
+                
                 <Image
                   source={{ uri: props.imageUrl }}
                   style={styles.croppedCamera}
-                  resizeMode="contain" // Ensure the image is contained within bounds
+                  resizeMode="contain" 
                 />
               </>
             ) : (
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingVertical:CONTENT_HEIGHT*0.01
+    
     
   },
   textContainer: {
@@ -629,14 +629,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: CONTENT_HEIGHT*-0.01,
-    position: 'relative', // Ensure the icon is positioned relative to this container
+    position: 'relative', 
   },
   iconContainer: {
     position: 'absolute',
-    bottom: CONTENT_HEIGHT*-0.034, // Adjust to overlap the container's bottom border
+    bottom: CONTENT_HEIGHT*-0.034, 
     transform: [
-      { translateX: CONTENT_WIDTH*-0.06 }, // Adjust for icon width
-      { scaleY: CONTENT_HEIGHT*0.0033 }, // Stretch the icon vertically
+      { translateX: CONTENT_WIDTH*-0.06 }, 
+      { scaleY: CONTENT_HEIGHT*0.0033 }, 
     ],
   },
   
@@ -653,9 +653,9 @@ const styles = StyleSheet.create({
     paddingTop:CONTENT_HEIGHT * 0.02
   },
   extraText: {
-    fontSize: CONTENT_HEIGHT * 0.025, // Set the font size for the additional text
-    color: '#2F4F4F', // Text color (dark grey)
-    fontFamily: 'Quicksand-Regular', // Replace with your desired font family
+    fontSize: CONTENT_HEIGHT * 0.025, 
+    color: '#2F4F4F', 
+    fontFamily: 'Quicksand-Regular', 
     paddingLeft: CONTENT_WIDTH*0.04
   },
   textContent: {
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   resultsTextResult: {
-    color: '#9FC6D6', // Different color for result text
+    color: '#9FC6D6', 
   },
   resultsTextDescription: {
     fontSize: CONTENT_HEIGHT * 0.024,
@@ -707,7 +707,7 @@ const styles = StyleSheet.create({
   camera: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'transparent',
-    // resizeMode:"contain"
+    
   },
   croppedCamera:{
     ...StyleSheet.absoluteFillObject,
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
   enlargedBlurredBackground: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: 'cover',
-    zIndex: -1, // Ensures it stays behind the cropped image
+    zIndex: -1, 
   },
   focusSquare: {
     position: 'absolute',
@@ -727,10 +727,10 @@ const styles = StyleSheet.create({
     borderColor: 'white',
   },
   svgContainer: {
-    flex: 1, // Allow the SVG to scale dynamically
+    flex: 1, 
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1, // Ensure it renders above the camera feed
+    zIndex: 1, 
   },
   svgOverlay: {
     position: 'absolute',
@@ -740,12 +740,12 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    pointerEvents: 'none', // Prevent the SVG from blocking touch events
+    pointerEvents: 'none', 
   },
   requirementsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL, // Dynamically adjust padding
+    paddingHorizontal: LAYOUT_MARGIN_HORIZONTAL, 
     marginBottom: LAYOUT_MARGIN_VERTICAL*2
   },
   requirementText: {
@@ -755,11 +755,11 @@ const styles = StyleSheet.create({
   },
   horizontalScanBar: {
     position: 'absolute',
-    top:0, // Starts at the top of the container
+    top:0, 
     left:0,
     right:15,
-    height: '100%', // Full height of the container
-    backgroundColor: '#F4F3F3', // Customize the color
+    height: '100%', 
+    backgroundColor: '#F4F3F3', 
     width: 5,
     zIndex: 2,
   },
@@ -767,9 +767,9 @@ const styles = StyleSheet.create({
   verticalScanBar: {
     position: 'absolute',
     top:0,
-    left: 0, // Starts at the left of the container
-    width: '100%', // Full width of the container
-    backgroundColor: '#F4F3F3', // Customize the color
+    left: 0,
+    width: '100%', 
+    backgroundColor: '#F4F3F3', 
     height: 5,
     zIndex: 2,
   },

@@ -1,31 +1,31 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  // General Container Styles
+  
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f4f8', // Light blue background
+    backgroundColor: '#f0f4f8', 
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)', // White overlay with slight transparency
+    backgroundColor: 'rgba(255, 255, 255, 0.85)', 
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  // Background Image Style
+  
   backgroundImage: {
     flex: 1,
   },
 
-  // Title and Text Styles
+ 
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 30, // Spacing below the title
-    fontFamily: 'Chalkboard SE', // Friendlier font
+    marginBottom: 30, 
+    fontFamily: 'Chalkboard SE', 
     color: '#333',
   },
   centralCircleText: {
@@ -35,14 +35,14 @@ export const styles = StyleSheet.create({
   },
   buttonText1: {
     fontSize: 18,
-    color: '#e67e22', // Orange text
+    color: '#e67e22', 
     fontFamily: 'Quicksand_400Regular',
     textAlign: 'center',
     fontWeight: 'bold',
   },
   buttonText2: {
     fontSize: 18,
-    color: '#2F4F4F', // Dark Slate Gray text
+    color: '#2F4F4F', 
     fontFamily: 'Quicksand_400Regular',
     textAlign: 'center',
     fontWeight: 'bold',
@@ -59,11 +59,11 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  // Image Styles
+  
   catImage: {
     width: 300,
     height: 300,
-    borderRadius: 150, // Rounded image
+    borderRadius: 150, 
     marginBottom: 20,
   },
   footerImage: {
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
     height: 80,
   },
 
-  // Navigation Containers
+  
   navContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -85,7 +85,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  // Button Styles
+  
   buttonDesign: {
     minWidth: 40,
     minHeight: 40,
@@ -116,77 +116,77 @@ export const styles = StyleSheet.create({
     bottom: 40,
     paddingVertical: 15,
     paddingHorizontal: 34,
-    backgroundColor: 'rgba(92, 167, 196, 0.27)', // Converted from #5ca7c445
+    backgroundColor: 'rgba(92, 167, 196, 0.27)', 
     borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000', // Shadow color
-    shadowOffset: { width: 0, height: 6 }, // External shadow
-    shadowOpacity: 0.3, // Subtle shadow opacity
-    shadowRadius: 6, // Smooth, blurred shadow
-    elevation: 8, // Android shadow (for consistency)
-    borderWidth: 0.4, // Subtle border width
-    borderColor: 'rgba(92, 167, 196, 0.5)', // Subtle border color slightly darker than button bg
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 6 }, 
+    shadowOpacity: 0.3, 
+    shadowRadius: 6, 
+    elevation: 8, 
+    borderWidth: 0.4, 
+    borderColor: 'rgba(92, 167, 196, 0.5)', 
 },
 
   circularButtonTheme: {
-    backgroundColor: '#c7e1eb', // Adjust the color as needed
-    borderRadius: 9999, // Make the button circular
+    backgroundColor: '#c7e1eb', 
+    borderRadius: 9999, 
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000', // Shadow color
-    shadowOffset: { width: 0, height: 6 }, // External shadow
-    shadowOpacity: 0.3, // Subtle shadow opacity
-    shadowRadius: 6, // Smooth, blurred shadow
-    elevation: 8, // Android shadow (for consistency)
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 6 },  
+    shadowOpacity: 0.3, 
+    shadowRadius: 6, 
+    elevation: 8, 
   },
   circularButtonText: {
     fontSize: 12,
-    color: '#2F4F4F', // Adjust the color as needed
-    fontFamily: 'Quicksand_400Regular', // Ensure this font is loaded
+    color: '#2F4F4F', 
+    fontFamily: 'Quicksand_400Regular', 
     textAlign: 'center',
     marginTop: 5,
   },
 
-  // Icon Style
+ 
   iconStyle: {
-    // Add any icon-specific styles here
+    
   },
 
-  // Circle Menu Styles
+  
   circleContainer: {
     position: 'relative',
-    // width and height are set dynamically in the component
+    
   },
   centralCircle: {
     borderRadius: 9999,
-    backgroundColor: '#FFA500', // Adjust color as needed
+    backgroundColor: '#FFA500', 
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    // width, height, left, and top are set dynamically in the component
+    
   },
   buttonContainer: {
     alignItems: 'center',
-    // width and height are set dynamically in the component
+    
   },
 
-  // Footer Style
+  
   footerContainer: {
     position: 'absolute',
     bottom: 50,
     alignItems: 'center',
   },
 
-  // Camera Styles
+  
   cameraContainer: {
-    width: 300, // Circle size (adjust as needed)
-    height: 300, // Circle size
-    borderRadius: 150, // Half of the width/height to make it circular
-    overflow: 'hidden', // Ensures the camera fits inside the circle
+    width: 300, 
+    height: 300, 
+    borderRadius: 150, 
+    overflow: 'hidden', 
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000', // Background color to avoid showing the square preview
+    backgroundColor: '#000', 
   },
   camera: {
     width: '100%',

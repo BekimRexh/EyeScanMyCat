@@ -13,14 +13,13 @@ export default function RootLayout() {
   const [isSplashComplete, setIsSplashComplete] = useState(false);
 
   const preloadResources = async () => {
-    // Preload fonts
+    
     const fontAssets = Font.loadAsync({
       'Quicksand-Regular': require('../assets/fonts/Quicksand-Regular.ttf'),
       'Quicksand-Bold': require('../assets/fonts/Quicksand-Bold.ttf'),
       'Quicksand-SemiBold': require('../assets/fonts/Quicksand-SemiBold.ttf'),
     });
   
-    // Wait for fonts to load
     await fontAssets;
   };
   
@@ -29,10 +28,10 @@ export default function RootLayout() {
     const prepareApp = async () => {
       try {
         console.log("Here")
-        // SplashScreen.preventAutoHideAsync();
+       
         await preloadResources();
         setIsAppReady(true);
-        SplashScreen.hideAsync(); // Add this to hide the splash screen
+        SplashScreen.hideAsync(); 
 
       } catch (error) {
         console.warn('Error loading resources:', error);
@@ -46,7 +45,7 @@ export default function RootLayout() {
     return (
       <View style={styles.container}>
         <SplashScreenComponent
-          onAnimationComplete={() => setIsSplashComplete(true)} // Wait for splash animation to finish
+          onAnimationComplete={() => setIsSplashComplete(true)} 
         />
       </View>
     );
@@ -68,10 +67,10 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8', // Same as SplashScreenComponent
+    backgroundColor: '#f8f8f8', 
   },
   contentWrapper: {
     flex: 1,
-    backgroundColor: '#f8f8f8', // Ensure consistency
+    backgroundColor: '#f8f8f8', 
   },
 });
