@@ -59,7 +59,7 @@ This model detects the **cat's face** using bounding box regression.
 
 ### 👁️ 3. Conjunctivitis Detection – CNN Classifier
 
-This is the **main model** used to assess the likelihood of conjunctivitis from the cropped cat eye region.
+This is the **main model** used to assess the likelihood of conjunctivitis from the cropped cats face.
 
 #### 🧪 Task: Binary Classification  
 - Classes: **Healthy** vs **Non-Healthy**
