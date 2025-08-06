@@ -4,6 +4,14 @@
 
 ---
 
+## 🎥 Demo Video
+
+📺 [Watch Demo on Google Drive](https://drive.google.com/file/d/1E5KUqW0fSAKDbHJUKaLSofQundpB4C0t/view?usp=drive_link)
+
+> Shows real-time inference pipeline including cat detection, face cropping, and eye disease prediction.
+
+---
+
 ## 🚀 Overview
 
 | Task                          | Model Used                            | Purpose |
