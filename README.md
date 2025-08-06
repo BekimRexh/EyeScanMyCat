@@ -121,19 +121,18 @@ This is the **main model** used to assess the likelihood of conjunctivitis from 
 
 Clone and run the app locally with Expo:
 
-bash
+```bash
 git clone https://github.com/BekimRexh/eyescanmycat.git
 cd eyescanmycat
 npm install
 expo start
-
+```
 ---
 
 
 ## 📥 App Download
 
 📲 [**Download EyeScanMyCat on iOS**](https://apps.apple.com/gb/app/eyescanmycat/id6740725884)  
-_(Replace this link with your actual App Store URL)_
 
 ---
 
