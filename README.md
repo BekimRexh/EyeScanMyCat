@@ -1,6 +1,6 @@
 # 🐱 EyeScanMyCat – AI-Powered Eye Disease Detection for Cats
 
-**EyeScanMyCat** is a mobile app that detects signs of feline conjunctivitis using on-device deep learning. It combines **three TensorFlow Lite models** to analyze cat photos end-to-end. The app runs fully offline and is available on the **iOS App Store**. A separate repository, CatBinaryModels, contains the datasets, preprocessing steps, and training code used to build these models.
+**EyeScanMyCat** is a mobile app that detects signs of feline conjunctivitis using on-device deep learning. It combines **three TensorFlow Lite models** to analyze cat photos end-to-end. The app runs fully offline and is available on the **iOS App Store**. A separate repository, **CatBinaryModels**, contains the datasets, preprocessing steps, and training code used to build these models, available at https://github.com/BekimRexh/CatBinaryModels.
 
 ---
 
