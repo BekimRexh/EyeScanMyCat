@@ -65,7 +65,7 @@ This model detects the **cat's face** using bounding box regression.
 
 ---
 
-### 👁3. Conjunctivitis Detection – CNN Classifier
+### Conjunctivitis Detection – CNN Classifier
 
 This is the **main model** used to assess the likelihood of conjunctivitis from the cropped cats face.
 
@@ -85,7 +85,7 @@ This is the **main model** used to assess the likelihood of conjunctivitis from 
 | 0.65 – 0.8      | Medium Chance       |
 | > 0.8           | High Chance         |
 
-#### ⚙️ Key Training Techniques
+#### Key Training Techniques
 - **Label smoothing** to reduce overconfidence
 - **Class weighting** to address imbalance
 - **Heavy image augmentation**:
@@ -140,7 +140,7 @@ expo start
 
 ## App Download
 
-📲 [**Download EyeScanMyCat on iOS**](https://apps.apple.com/gb/app/eyescanmycat/id6740725884)  
+ [**Download EyeScanMyCat on iOS**](https://apps.apple.com/gb/app/eyescanmycat/id6740725884)  
 
 ---
 
