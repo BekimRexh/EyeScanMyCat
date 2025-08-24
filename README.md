@@ -4,15 +4,15 @@
 
 ---
 
-## 🎥 Demo Video
+## Demo Video
 
-📺 [Watch Demo on Google Drive](https://drive.google.com/file/d/1E5KUqW0fSAKDbHJUKaLSofQundpB4C0t/view?usp=drive_link)
+[Watch Demo on Google Drive](https://drive.google.com/file/d/1E5KUqW0fSAKDbHJUKaLSofQundpB4C0t/view?usp=drive_link)
 
 > Shows real-time inference pipeline including cat detection, face cropping, and eye disease prediction.
 
 ---
 
-## 🚀 Overview
+## Overview
 
 | Task                          | Model Used                            | Purpose |
 |------------------------------|----------------------------------------|---------|
@@ -22,9 +22,9 @@
 
 ---
 
-## 🧠 Machine Learning Workflow
+## Machine Learning Workflow
 
-### 1. 🐈 Cat Detection – YOLOv5
+### 1. Cat Detection – YOLOv5
 
 - Detects the presence of a cat in the image.
 - Trained using YOLOv5 and converted to TensorFlow Lite:
@@ -38,11 +38,11 @@
       save_dir="./cat_body_detection/output"
   )
 
-### 🐱 2. Face Detection – Bounding Box Regressor
+### 2. Face Detection – Bounding Box Regressor
 
 This model detects the **cat's face** using bounding box regression.
 
-#### 📸 Step-by-Step Workflow:
+#### Step-by-Step Workflow:
 
 1. **Label Generation**
    - Used OpenCV’s `haarcascade_frontalcatface.xml` to detect cat faces.
@@ -65,19 +65,19 @@ This model detects the **cat's face** using bounding box regression.
 
 ---
 
-### 👁️ 3. Conjunctivitis Detection – CNN Classifier
+### 👁3. Conjunctivitis Detection – CNN Classifier
 
 This is the **main model** used to assess the likelihood of conjunctivitis from the cropped cats face.
 
-#### 🧪 Task: Binary Classification  
+#### Task: Binary Classification  
 - Classes: **Healthy** vs **Non-Healthy**
 
-#### 🧱 Model Architecture
+#### Model Architecture
 - Based on **MobileNetV2** (pretrained on ImageNet)
 - Custom classification head:
   - GlobalAveragePooling2D → Dense(128, relu) → Dropout → Dense(1, sigmoid)
 
-#### 🔍 Risk Mapping (based on model output):
+#### Risk Mapping (based on model output):
 | Score Range     | Risk Level          |
 |-----------------|---------------------|
 | ≤ 0.5           | Healthy             |
@@ -94,24 +94,24 @@ This is the **main model** used to assess the likelihood of conjunctivitis from 
   - Brightness changes  
   - Translation  
 
-> 📂 [**Sample Dataset (Google Drive)**](https://drive.google.com/drive/folders/1sXdw-8b0ZTOrsPKWwvCUm7je000vs3PY?usp=drive_link)
+> [**Sample Dataset (Google Drive)**](https://drive.google.com/drive/folders/1sXdw-8b0ZTOrsPKWwvCUm7je000vs3PY?usp=drive_link)
 
 ---
 
-### 📱 Mobile App Stack
+### Mobile App Stack
 
 | Component        | Technology           |
 |------------------|----------------------|
 | Frontend UI       | React Native + Expo |
 | ML Inference      | TensorFlow Lite     |
 | Deployment        | iOS App Store        |
-| Offline Support   | ✅ Yes (Fully on-device) |
+| Offline Support   | Yes (Fully on-device) |
 
 > ℹ️ Initially experimented with **TensorFlow.js**, but later ejected from Expo and used **native TensorFlow Lite** to improve performance and model compatibility.
 
 ---
 
-## 📊 Evaluation Highlights
+## Evaluation Highlights
 
 - ✅ **Balanced classes** using `class_weight` from `sklearn` to handle class imbalance
 - 📉 **Very low validation split** used intentionally to maximize training data (due to limited image availability)
@@ -125,7 +125,7 @@ This is the **main model** used to assess the likelihood of conjunctivitis from 
 
 ---
 
-## 📦 Setup Instructions
+## Setup Instructions
 
 Clone and run the app locally with Expo:
 
@@ -138,21 +138,21 @@ expo start
 ---
 
 
-## 📥 App Download
+## App Download
 
 📲 [**Download EyeScanMyCat on iOS**](https://apps.apple.com/gb/app/eyescanmycat/id6740725884)  
 
 ---
 
-## 📌 Future Improvements
+## Future Improvements
 
-- 👁️ Add blepharitis (eyelid inflammation) detection
-- 🧠 Improve bounding box model with confidence scoring
-- 📚 Include in-app educational tips for cat owners
+- Add blepharitis (eyelid inflammation) detection
+- Improve bounding box model with confidence scoring
+- Include in-app educational tips for cat owners
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Bekim Rexhepi**  
 🔗 [LinkedIn](https://www.linkedin.com/in/bekim-rexhepi/)  
@@ -160,14 +160,14 @@ expo start
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 This app is intended for **informational purposes only** and does **not** replace professional veterinary advice.  
 Always consult a licensed veterinarian for any medical concerns regarding your pet.
 
 ---
 
-## 📝 License
+## License
 
 **MIT License**  
 Open to contributions. For educational and non-commercial use.
